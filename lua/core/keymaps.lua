@@ -12,7 +12,7 @@ map("n", "§§", "<cmd>cclose<cr>")
 
 -- delete single character without copying into register
 map("n", "x", '"_x')
-map({ "n", "i", "x", "!", "v" }, "§", "<esc>")
+map({ "n", "i", "!", "v" }, "§", "<esc>")
 
 -- better indenting
 map("v", "<", "<gv")
@@ -36,15 +36,13 @@ map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
 map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 
-map("n", "<localleader>e", "<cmd>Explore<cr>")
-
 map("n", "<localleader>x", "<cmd>bd<cr>")
 map("n", "L", "<cmd>bn<cr>")
 
 -- ================================================================
 -- Mini Modules
-map("n", "<leader>f", "<cmd>Pick files<cr>")
-map("n", "<leader>g", "<cmd>Pick grep_live<cr>")
+map("n", "<leader>ff", "<cmd>Pick files<cr>")
+map("n", "<leader>gg", "<cmd>Pick grep_live<cr>")
 map("n", "<leader>b", "<cmd>Pick buffers<cr>")
 
 M.mini_files_key = {
