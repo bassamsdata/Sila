@@ -1,0 +1,11 @@
+# Mac files
+*.DS_Store
+
+# backup files
+*.bak
+*.swp
+*.old
+
+# log files
+*.log
+
