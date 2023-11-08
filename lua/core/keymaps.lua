@@ -1,6 +1,7 @@
 -- SideNote: I used (and still use) LazyVim for a long time so my mind is used to its keybindings
 local map = vim.keymap.set
 -- to be able to put most ;) keymaps here and keep lazy loading for some plugins
+local M = {}
 -- open grep directly and then open quickfix with the results
 
 -- LOVE: search within visual selection - this is magic
@@ -40,3 +41,26 @@ map("n", "<localleader>e", "<cmd>Explore<cr>")
 map("n", "<localleader>x", "<cmd>bd<cr>")
 map("n", "L", "<cmd>bn<cr>")
 
+-- ================================================================
+-- Mini Modules
+map("n", "<leader>f", "<cmd>Pick files<cr>")
+map("n", "<leader>g", "<cmd>Pick grep_live<cr>")
+map("n", "<leader>b", "<cmd>Pick buffers<cr>")
+
+M.mini_files_key = {
+	{
+		"<leader>e",
+		function()
+			local bufname = vim.api.nvim_buf_get_name(0)
+			local path = vim.fn.fnamemodify(bufname, ":p")
+			if vim.fn.filereadable(path) == 1 then
+				MiniFiles.open(bufname, false)
+			else
+				MiniFiles.close()
+			end
+		end,
+		{ desc = "File explorer" },
+	},
+}
+
+return M
