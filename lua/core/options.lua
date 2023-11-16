@@ -67,6 +67,20 @@ opt.iskeyword:append("_")
 
 -- this drove me crzy - it controll how vertical movement behave when tab is used
 opt.list = true
+
+opt.foldcolumn = "1"
+opt.foldmethod = "indent"
+-- opt.viewoptions = "cursor, folds"
+vim.opt.foldtext = "v:lua.require'core.Util'.foldtext()"
+
+vim.opt.listchars:append({
+	trail = " ",
+})
+
+if vim.fn.has("nvim-0.9.0") == 1 then
+  vim.opt.statuscolumn = [[%!v:lua.require'core.Util'.statuscolumn()]]
+end
+
 -- UI characters.
 opt.fillchars = {
 	foldopen = "",
