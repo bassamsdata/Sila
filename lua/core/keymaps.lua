@@ -52,17 +52,14 @@ map("n", "<leader>b", "<cmd>Pick buffers<cr>", { desc = "[F]ind [B]uffers" })
 map("n", "<leader>fk", "<cmd>Pick keymaps<cr>", { desc = "[F]ind [K]eymaps" })
 map("n", "<leader>fh", "<cmd>Pick hl_groups<cr>", { desc = "[F]ind [H]ighlights" })
 
+-- I got this from reddit - wow, look how simple it is vs what I've done previously.
 M.mini_files_key = {
 	{
 		"<leader>e",
 		function()
+			-- added this just to open the mini.files at the current file location
 			local bufname = vim.api.nvim_buf_get_name(0)
-			local path = vim.fn.fnamemodify(bufname, ":p")
-			if vim.fn.filereadable(path) == 1 then
-				MiniFiles.open(bufname, false)
-			else
-				MiniFiles.close()
-			end
+			local _ = require("mini.files").close() or require("mini.files").open(bufname, false)
 		end,
 		{ desc = "File explorer" },
 	},
