@@ -1,12 +1,13 @@
--- SideNote: I used (and still use) LazyVim for a long time so my mind is used to its keybindings
+-- Side Note: I used (and still use) LazyVim for a long time so my mind is used to its keybindings
 local map = vim.keymap.set
 -- to be able to put most ;) keymaps here and keep lazy loading for some plugins
 local M = {}
 -- open grep directly and then open quickfix with the results
 
 -- LOVE: search within visual selection - this is magic
-vim.keymap.set("x", "/", "<Esc>/\\%V")
+map("x", "/", "<Esc>/\\%V")
 
+-- LOVE: this is amazing
 map("n", "<localleader>g", "<cmd>lua require('core.Util').grepandopen()<cr>")
 map("n", "§§", "<cmd>cclose<cr>")
 
@@ -17,6 +18,8 @@ map({ "n", "i", "!", "v" }, "§", "<esc>")
 -- better indenting
 map("v", "<", "<gv")
 map("v", ">", ">gv")
+
+map("v", "<leader>r", '"hy:%s/<C-r>h//g<left><left>') -- Replace all instances of highlighted words
 
 -- Clear search with <esc>
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
@@ -38,6 +41,23 @@ map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window w
 
 map("n", "<localleader>x", "<cmd>bd<cr>")
 map("n", "L", "<cmd>bn<cr>")
+
+-- Make U opposite to u.
+map("n", "U", "<C-r>", { desc = "Redo" })
+
+-- TODO: check if this is correct before apply
+-- Execute macro over a visual region.
+-- map('x', '@', function()
+--     return ':norm @' .. vim.fn.getcharstr() .. '<cr>'
+-- end, { expr = true })
+
+-- Word navigation in non-normal modes.
+map({ "i", "c" }, "<C-h>", "<C-Left>", { desc = "Move word(s) backwards" })
+map({ "i", "c" }, "<C-l>", "<C-Right>", { desc = "Move word(s) forwards" })
+
+-- Move Lines
+map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
+map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- ================================================================
 -- Mini Modules
