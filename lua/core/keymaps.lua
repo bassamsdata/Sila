@@ -60,5 +60,28 @@ M.mini_files_key = {
 		{ desc = "File explorer" },
 	},
 }
+-- function()
+-- 	local bufname = vim.api.nvim_buf_get_name(0)
+-- 	local path = vim.fn.fnamemodify(bufname, ":p")
+-- 	if vim.fn.filereadable(path) == 1 then
+-- 		MiniFiles.open(bufname, false)
+-- 	else
+-- 		MiniFiles.close()
+-- 	end
+-- end,
+
+-- credit to @MariaSolOs
+-- Use dressing for spelling suggestions.
+map("n", "z=", function()
+	vim.ui.select(
+		vim.fn.spellsuggest(vim.fn.expand("<cword>")),
+		{},
+		vim.schedule_wrap(function(selected)
+			if selected then
+				vim.cmd("normal! ciw" .. selected)
+			end
+		end)
+	)
+end, { desc = "Spelling suggestions" })
 
 return M
