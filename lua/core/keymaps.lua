@@ -41,9 +41,16 @@ map("n", "L", "<cmd>bn<cr>")
 
 -- ================================================================
 -- Mini Modules
-map("n", "<leader>ff", "<cmd>Pick files<cr>")
-map("n", "<leader>gg", "<cmd>Pick grep_live<cr>")
-map("n", "<leader>b", "<cmd>Pick buffers<cr>")
+map("n", "<leader>ff", "<cmd>Pick files<cr>", { desc = "[F]ind [F]iles" })
+map("n", "<leader><space>", "<cmd>Pick files<cr>", { desc = "[F]ind [F]iles" })
+map("n", "<leader>fg", "<cmd>Pick grep_live<cr>", { desc = "[F]ind [G]rep_live" })
+map("n", "<leader>fo", "<cmd>Pick oldfiles<cr>", { desc = "[F]ind [O]ld files" })
+map("n", "<leader>fr", "<cmd>Pick resume<cr>", { desc = "[F]ind [R]esume" })
+map("n", "<leader>fh", "<cmd>Pick help<cr>", { desc = "[F]ind [H]elp" })
+map("n", "<leader>fk", "<cmd>Pick keymaps<cr>", { desc = "[F]ind [K]eymaps" })
+map("n", "<leader>b", "<cmd>Pick buffers<cr>", { desc = "[F]ind [B]uffers" })
+map("n", "<leader>fk", "<cmd>Pick keymaps<cr>", { desc = "[F]ind [K]eymaps" })
+map("n", "<leader>fh", "<cmd>Pick hl_groups<cr>", { desc = "[F]ind [H]ighlights" })
 
 M.mini_files_key = {
 	{
