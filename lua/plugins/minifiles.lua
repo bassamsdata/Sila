@@ -1,5 +1,9 @@
-local keymaps = Prequire("core.keymaps")
+local keymaps = require("core.keymaps")
 
 return {
-	{ "echasnovski/mini.files", keys = keymaps.mini_files_key, opts = {} },
+	{
+		"echasnovski/mini.files",
+		keys = keymaps.mini_files_key,
+		opts = {},
+	},
 }
