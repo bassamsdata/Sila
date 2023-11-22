@@ -20,4 +20,4 @@ This is still work in progress and the readme currently just to track the TODO l
 
 ### contriubite
 - add select to material.nvim
--
+- add lazygit

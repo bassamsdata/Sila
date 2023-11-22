@@ -35,7 +35,7 @@ return {
 			end
 		end,
 	},
-{
+	{
 		"echasnovski/mini.hipatterns",
 		event = "BufReadPre",
 		opts = {

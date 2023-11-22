@@ -23,7 +23,7 @@ return {
 				col = 0,
 				width = 40,
 				height = 20,
-		}
+			}
 
 			-- Modify the 'files' picker directly
 			MiniPick.registry.files = function()

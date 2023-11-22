@@ -1,6 +1,7 @@
 return {
 	{
 		"echasnovski/mini.starter",
+		event = "VimEnter",
 		opts = function()
 			local logo = table.concat({
 
@@ -22,7 +23,9 @@ return {
     evaluate_single = true,
     header = logo,
     items = {
-      -- TODO:
+
+
+      -- TzaODO:
       new_section("Find file",    "Pick files", "Telescope"),
       new_section("Recent files", "Pick oldfiles",   "Telescope"),
       new_section("Grep text",    "Pick grep_live",  "Telescope"),

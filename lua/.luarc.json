@@ -2,6 +2,7 @@
     "diagnostics.globals": [
         "vim",
         "Prequire",
-        "MiniFiles"
+        "MiniFiles",
+        "NONE"
     ]
 }
