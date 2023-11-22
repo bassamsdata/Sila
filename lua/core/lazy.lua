@@ -13,12 +13,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- use a protected call so we don't error out on first use
-local lazy = Prequire("lazy")
+local lazy = require("lazy")
 if not lazy then
 	return
 end
 
---- @type LazySpec
 local plugins = "plugins"
 local lsp = "plugins.lsp"
 
