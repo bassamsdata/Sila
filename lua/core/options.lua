@@ -6,6 +6,10 @@ vim.g.maplocalleader = "\\" -- we need to escabe \ with another \
 -- TODO: change this to set becaue it's more intuitve
 local opt = vim.opt -- for concisenes
 
+if vim.env.VSCODE then
+	vim.g.vscode = true
+end
+
 -- line numbers
 opt.relativenumber = true
 opt.number = true
