@@ -3,6 +3,17 @@ return {
 	{
 		"stevearc/conform.nvim",
 		event = { "LspAttach", "BufWritePre" },
+		cmd = "ConformInfo",
+		keys = {
+			{
+				"<leader>cF",
+				function()
+					require("conform").format({ formatters = { "injected" } })
+				end,
+				mode = { "n", "v" },
+				desc = "Format Injected Langs",
+			},
+		},
 		config = function()
 			local conform = require("conform")
 			conform.setup({
