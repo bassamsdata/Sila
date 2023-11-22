@@ -39,8 +39,11 @@ map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
 map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 
-map("n", "<localleader>x", "<cmd>bd<cr>")
-map("n", "L", "<cmd>bn<cr>")
+-- Buffers
+map("n", "<localleader>x", "<cmd>bd<cr>", { desc = "Close buffer" })
+map("n", "<localleader>X", "<cmd>bd!<cr>", { desc = "Force Close buffer" })
+map("n", "L", "<cmd>bn<cr>") -- switch to next buffer
+map("n", "H", "<cmd>bp<cr>") -- switch to previous buffer
 
 -- Make U opposite to u.
 map("n", "U", "<C-r>", { desc = "Redo" })
@@ -59,8 +62,19 @@ map({ "i", "c" }, "<C-l>", "<C-Right>", { desc = "Move word(s) forwards" })
 map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
--- ================================================================
--- Mini Modules
+-- preserve cursor position on visual yank
+map("x", "y", "ygv<ESC>")
+-- move cursor to the start of the line on format
+map("n", "==", "==_")
+map("x", "=", "=gv_")
+-- go to end after a join
+map("n", "J", "J_")
+-- TODO: replace it with treesj plugin
+-- split (opposite of J)
+map("n", "S", "T hr<CR>k$")
+-- === === === === === === === === === === === === === === === === === ===
+-- === === Mini Modules
+-- === === === === === === === === === === === === === === === === === ===
 map("n", "<leader>ff", "<cmd>Pick files<cr>", { desc = "[F]ind [F]iles" })
 map("n", "<leader><space>", "<cmd>Pick files<cr>", { desc = "[F]ind [F]iles" })
 map("n", "<leader>fg", "<cmd>Pick grep_live<cr>", { desc = "[F]ind [G]rep_live" })
