@@ -98,23 +98,36 @@ end
 
 -- TODO: change the icons
 function M.foldtext()
-	local ok = pcall(vim.treesitter.get_parser, vim.api.nvim_get_current_buf())
-	local ret = ok and vim.treesitter.foldtext and vim.treesitter.foldtext()
-	if not ret or type(ret) == "string" then
-		ret = { { vim.api.nvim_buf_get_lines(0, vim.v.lnum - 1, vim.v.lnum, false)[1], {} } }
-	end
-	table.insert(ret, { " " .. "󰇘" })
+	local start_line = vim.api.nvim_buf_get_lines(0, vim.v.foldstart - 1, vim.v.foldstart, false)[1]
+	local end_line = vim.api.nvim_buf_get_lines(0, vim.v.foldend - 1, vim.v.foldend, false)[1]
 
-	if not vim.treesitter.foldtext then
-		return table.concat(
-			vim.tbl_map(function(line)
-				return line[1]
-			end, ret),
-			" "
-		)
-	end
-	return ret
+	-- Replace tabs with spaces
+	start_line = start_line:gsub("\t", string.rep(" ", vim.bo.tabstop))
+
+	-- Trim whitespace
+	end_line = end_line:gsub("^%s*(.-)%s*$", "%1")
+
+	return start_line .. " ... " .. end_line
 end
+
+-- function M.foldtext()
+-- 	local ok = pcall(vim.treesitter.get_parser, vim.api.nvim_get_current_buf())
+-- 	local ret = ok and vim.treesitter.foldtext and vim.treesitter.foldtext()
+-- 	if not ret or type(ret) == "string" then
+-- 		ret = { { vim.api.nvim_buf_get_lines(0, vim.v.lnum - 1, vim.v.lnum, false)[1], {} } }
+-- 	end
+-- 	table.insert(ret, { " " .. "󰇘" })
+--
+-- 	if not vim.treesitter.foldtext then
+-- 		return table.concat(
+-- 			vim.tbl_map(function(line)
+-- 				return line[1]
+-- 			end, ret),
+-- 			" "
+-- 		)
+-- 	end
+-- 	return ret
+-- end
 
 function M.statuscolumn()
 	local win = vim.g.statusline_winid
