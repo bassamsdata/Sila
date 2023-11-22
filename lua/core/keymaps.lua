@@ -2,30 +2,39 @@
 local map = vim.keymap.set
 -- to be able to put most ;) keymaps here and keep lazy loading for some plugins
 local M = {}
+
+-- LOVE: I love these mappingb. **They are fun**
+-- === This is the love section. I really larened alot from those keymaps
+map("x", "/", "<Esc>/\\%V") --search within visual selection - this is magic
+-- Replace all instances of highlighted words
+map("v", "<leader>r", '"hy:%s/<C-r>h//g<left><left>', { desc = "Replace all instances" })
 -- open grep directly and then open quickfix with the results
+map("n", "<localleader>g", "<cmd>lua require('core.Util').grepandopen()<cr>", { desc = "Grep and open quickfix" })
+-- motions -- I really didn't know about such amazing keymaps `:h omap-info`
+-- entire buffer (https://vi.stackexchange.com/a/2321)
+-- like you can do `daa` to delete entire buffer, `yaa` to yank entire buffer
+map("o", "aa", ":<c-u>normal! mzggVG<cr>`z")
+-- love section === === === === === === === === === === === === === === === ===
 
--- LOVE: search within visual selection - this is magic
-map("x", "/", "<Esc>/\\%V")
-
--- LOVE: this is amazing
-map("n", "<localleader>g", "<cmd>lua require('core.Util').grepandopen()<cr>")
-map("n", "§§", "<cmd>cclose<cr>")
-
--- delete single character without copying into register
-map("n", "x", '"_x')
+-- Misc === === === === === === === === === === === === === === === === === ===
+map("n", "x", '"_x') -- delete single character without copying into register
 map({ "n", "i", "!", "v" }, "§", "<esc>")
+map("n", "§§", "<cmd>cclose<cr>") -- close quickfix with §§
+-- Clear search with <esc>
+map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
+map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" }) -- Open the package manager lazy
+
+-- Keeping the cursor centered when cycling search results
+map("n", "n", "nzzzv", { desc = "Next result" })
+map("n", "N", "Nzzzv", { desc = "Previous result" })
+
+-- page shift
+map("n", "<C-Up>", "<C-y>k", { desc = "Shift page up one line" })
+map("n", "<C-Down>", "<C-e>j", { desc = "Shift page down one line" })
 
 -- better indenting
 map("v", "<", "<gv")
 map("v", ">", ">gv")
-
-map("v", "<leader>r", '"hy:%s/<C-r>h//g<left><left>') -- Replace all instances of highlighted words
-
--- Clear search with <esc>
-map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
-
--- lazy
-map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
 -- Move to window using the <ctrl> hjkl keys
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window", remap = true })
