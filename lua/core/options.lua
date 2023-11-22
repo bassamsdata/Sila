@@ -3,6 +3,7 @@ vim.g.mapleader = " "
 -- Set <\> as the local leader key - it gives me a whole new set of letters.
 vim.g.maplocalleader = "\\" -- we need to escabe \ with another \
 
+-- TODO: change this to set becaue it's more intuitve
 local opt = vim.opt -- for concisenes
 
 -- line numbers
@@ -24,6 +25,7 @@ opt.undofile = true
 opt.undolevels = 10000
 
 opt.statuscolumn = [[%!v:lua.require'core.util'.statuscolumn()]]
+opt.laststatus = 3
 
 -- Confirm to save changes before exiting modified buffer
 opt.confirm = true
@@ -40,6 +42,7 @@ opt.wrap = false
 -- search settings
 opt.ignorecase = true
 opt.smartcase = true
+opt.inccommand = "split" -- split window for substitute - nice to have
 
 -- Cursor settings
 opt.cursorline = true
@@ -60,10 +63,15 @@ opt.clipboard:append("unnamedplus")
 --spli windows
 opt.splitright = true
 opt.splitbelow = true
+opt.splitkeep = "screen"
 
 -- TESTING: consider dash - as one word
-opt.iskeyword:append("_")
+-- TODO: turns out, is not good. we'll try chrisgrieser/nvim-spider
+-- opt.iskeyword:append("_")
 -- opt.formatoptions = "jcroqlnt" -- tcqj
+
+-- completion
+vim.opt.wildignore:append({ ".DS_Store" })
 
 -- this drove me crzy - it controll how vertical movement behave when tab is used
 opt.list = true
@@ -78,7 +86,7 @@ vim.opt.listchars:append({
 })
 
 if vim.fn.has("nvim-0.9.0") == 1 then
-  vim.opt.statuscolumn = [[%!v:lua.require'core.Util'.statuscolumn()]]
+	vim.opt.statuscolumn = [[%!v:lua.require'core.Util'.statuscolumn()]]
 end
 
 -- UI characters.
