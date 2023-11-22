@@ -1,6 +1,6 @@
 return {
 	"neovim/nvim-lspconfig",
-	event = { "BufReadPre", "BufNewFile" },
+	event = { "BufReadPost", "BufNewFile", "BufWritePre" },
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
 		"williamboman/mason.nvim", -- add it here so it can lazy load, and require when enter buffer
@@ -9,11 +9,28 @@ return {
 	},
 
 	config = function()
+		-- TODO: I took this fn as is from Maria. change this to simple if statement
+		--- Returns the editor's capabilities + some overrides.
+		local client_capabilities = function()
+			return vim.tbl_deep_extend(
+				"force",
+				vim.lsp.protocol.make_client_capabilities(),
+				-- nvim-cmp supports additional completion capabilities, so broadcast that to servers.
+				require("cmp_nvim_lsp").default_capabilities(),
+				{
+					workspace = {
+						-- PERF: didChangeWatchedFiles is too slow.
+						-- TODO: Remove this when https://github.com/neovim/neovim/issues/23291#issuecomment-1686709265 is fixed.
+						didChangeWatchedFiles = { dynamicRegistration = false },
+					},
+				}
+			)
+		end
 		-- import lspconfig plugin
 		local lspconfig = require("lspconfig")
-
-		-- import cmp-nvim-lsp plugin
-		local cmp_nvim_lsp = require("cmp_nvim_lsp")
+		-- used to enable autocompletion (assign to every lsp server config)
+		local capabilities = client_capabilities()
+		-- local capabilities = cmp_nvim_lsp.default_capabilities()
 
 		local map = vim.keymap.set -- for conciseness
 		local opts = { noremap = true, silent = true }
@@ -29,11 +46,11 @@ return {
 
 			-- set keybinds
 			opts.desc = "Show LSP references"
-			map("n", "gR", "<cmd>Pick lsp scope='references'<CR>", opts) -- show definition, references
-			opts.desc = "Go to declaration"
-			map("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
+			map("n", "gr", "<cmd>Pick lsp scope='references'<CR>", opts) -- show definition, references
+			opts.desc = "Go to Definition"
+			map("n", "gd", vim.lsp.buf.references, opts) -- go to declaration
 			opts.desc = "Show LSP definitions"
-			map("n", "gd", "<cmd>Pick lsp scope='definition'<CR>", opts) -- show lsp definitions
+			map("n", "gD", "<cmd>Pick lsp scope='definition'<CR>", opts) -- show lsp definitions
 			opts.desc = "Show LSP implementations"
 			map("n", "gi", "<cmd>Pick lsp scope='implementation'<CR>", opts) -- show lsp implementations
 			opts.desc = "Show LSP type definitions"
@@ -44,9 +61,21 @@ return {
 
 			opts.desc = "Smart rename"
 			map("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
+			opts.desc = "Signature help"
+			map("i", "<C-k>", vim.lsp.buf.signature_help, opts)
 
 			opts.desc = "Show buffer diagnostics"
-			map("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
+			map("n", "<leader>D", "<cmd>Pick diagnostic<CR>", opts) -- show  diagnostics for file
+
+			opts.desc = "Toggle Diagnostics"
+			map("n", "<leader>ud", function()
+				local is_disabled = vim.diagnostic.is_disabled()
+				if is_disabled then
+					vim.diagnostic.enable()
+				else
+					vim.diagnostic.disable()
+				end
+			end, opts)
 
 			opts.desc = "Show line diagnostics"
 			map("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
@@ -59,13 +88,9 @@ return {
 
 			opts.desc = "Show documentation for what is under cursor"
 			map("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
-
 			opts.desc = "Restart LSP"
 			map("n", "<leader>rs", "<cmd>LspRestart<cr>", opts) -- mapping to restart lsp if necessary
 		end
-
-		-- used to enable autocompletion (assign to every lsp server config)
-		local capabilities = cmp_nvim_lsp.default_capabilities()
 
 		-- Change the Diagnostic symbols in the sign column (gutter)
 		local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
@@ -97,13 +122,52 @@ return {
 			capabilities = capabilities,
 			on_attach = on_attach,
 		})
+		-- configure r langauge server
+		lspconfig["marksman"].setup({
+			capabilities = capabilities,
+			on_attach = on_attach,
+		})
 
 		-- configure lua server (with special settings)
 		lspconfig["lua_ls"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
+			on_init = function(client)
+				local path = client.workspace_folders
+					and client.workspace_folders[1]
+					and client.workspace_folders[1].name
+				if not path or not (vim.loop.fs_stat(path .. "/.luarc.lua") or vim.loop.fs_stat(path .. "/.luarc")) then
+					client.config.settings = vim.tbl_deep_extend("force", client.config.settings, {
+						Lua = {
+							runtime = {
+								version = "LuaJIT",
+							},
+							workspace = {
+								checkThirdParty = false,
+								library = {
+									vim.env.VIMRUNTIME,
+									"${3rd}/luv/library",
+								},
+							},
+						},
+					})
+					client.notify(
+						vim.lsp.protocol.Methods.workspace_didChangeConfiguration,
+						{ settings = client.config.settings }
+					)
+				end
+
+				return true
+			end,
 			settings = { -- custom settings for lua
 				Lua = {
+					-- Using stylua for formatting.
+					format = { enable = false },
+					hint = {
+						enable = true,
+						arrayIndex = "Disable",
+					},
+					completion = { callSnippet = "Replace" },
 					-- make the language server recognize "vim" global
 					diagnostics = {
 						globals = { "vim" },
