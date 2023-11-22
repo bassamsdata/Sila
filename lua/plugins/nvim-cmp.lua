@@ -1,6 +1,6 @@
 return {
 	"hrsh7th/nvim-cmp",
-	event = "InsertEnter",
+	event = { "InsertEnter", "CmdlineEnter" },
 	dependencies = {
 		"hrsh7th/cmp-buffer", -- source for text in buffer
 		"hrsh7th/cmp-path", -- source for file system paths
@@ -36,8 +36,13 @@ return {
 				["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
 				["<C-b>"] = cmp.mapping.scroll_docs(-4),
 				["<C-f>"] = cmp.mapping.scroll_docs(4),
-				["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
+				["<C-S-Space>"] = cmp.mapping.complete(), -- show completion suggestions
 				["<C-e>"] = cmp.mapping.abort(), -- close completion window
+				["<Esc>"] = cmp.mapping.close(),
+				["<Down>"] = function(fb)
+					cmp.close()
+					fb()
+				end,
 				["<CR>"] = cmp.mapping.confirm({ select = false }),
 				-- TODO: if statement to accept codeium suggestions.
 				["<Tab>"] = cmp.mapping(function(fallback)
