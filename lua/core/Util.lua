@@ -177,4 +177,68 @@ function M.statuscolumn()
 	return table.concat(components, "")
 end
 
+-- Neovim Utils
+--- returns current vim mode name
+function M.get_mode_name()
+  local mode_names = {
+    n         = "no",
+    no        = "n?",
+    nov       = "n?",
+    noV       = "n?",
+    ["no\22"] = "n?",
+    niI       = "ni",
+    niR       = "nr",
+    niV       = "nv",
+    nt        = "nt",
+    v         = "vi",
+    vs        = "vs",
+    V         = "v_",
+    Vs        = "vs",
+    ["\22"]   = "^V",
+    ["\22s"]  = "^V",
+    s         = "se",
+    S         = "s_",
+    ["\19"]   = "^S",
+    i         = "in",
+    ic        = "ic",
+    ix        = "ix",
+    R         = "re",
+    Rc        = "rc",
+    Rx        = "rx",
+    Rv        = "rv",
+    Rvc       = "rv",
+    Rvx       = "rv",
+    c         = "co",
+    cv        = "ex",
+    r         = "..",
+    rm        = "m.",
+    ["r?"]    = "??",
+    ["!"]     = "!!",
+    t         = "te",
+  }
+  return mode_names[vim.api.nvim_get_mode().mode]
+end
+
+--- returns current vim mode highlight
+function M.get_mode_hl()
+  local mode_hls = {
+    n       = 'CursorLineNr',
+    i       = 'Question',
+    v       = 'Constant',
+    V       = 'VisualMode',
+    ['\22'] = 'VisualMode',
+    c       = 'CursorLineNr',
+    s       = 'SelectMode',
+    S       = 'SelectMode',
+    ['\19'] = "SelectMode",
+    R       = 'ControlMode',
+    r       = 'ControlMode',
+    ['!']   = 'NormalMode',
+    t       = 'TerminalMode',
+  }
+
+  return mode_hls[vim.api.nvim_get_mode().mode]
+end
+
+
 return M
