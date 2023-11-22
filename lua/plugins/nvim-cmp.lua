@@ -95,8 +95,16 @@ return {
 				ghost_text = { hl_group = "LspCodeLens" },
 			},
 		})
+		cmp.setup.cmdline({ "/", "?" }, {
+			view = {
+				entries = { name = "wildmenu", separator = "|" },
+			},
+			sources = {
+				{ name = "buffer" },
+			},
+		})
 		-- TODO: implement exceptions: https://github.com/hrsh7th/nvim-cmp/wiki/Advanced-techniques#disabling-cmdline-completion-for-certain-commands-such-as-increname
-		cmp.setup.cmdline({ ":", "/" }, {
+		cmp.setup.cmdline(":", {
 			view = {
 				entries = { name = "wildmenu", separator = "|" },
 			},
