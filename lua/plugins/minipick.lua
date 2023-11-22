@@ -5,9 +5,15 @@ return {
 		cmd = "Pick",
 		config = function()
 			local MiniPick = require("mini.pick")
+			local MiniExtra = require("mini.extra")
 
 			-- Setup 'mini.pick'
 			MiniPick.setup({})
+
+			-- Define a new picker for the quickfix list
+			MiniPick.registry.quickfix = function()
+				return MiniExtra.pickers.list({ scope = "quickfix" }, {})
+			end
 
 			-- File picker configuration
 			local cursor_win_config = {
@@ -17,7 +23,7 @@ return {
 				col = 0,
 				width = 40,
 				height = 20,
-			}
+		}
 
 			-- Modify the 'files' picker directly
 			MiniPick.registry.files = function()
