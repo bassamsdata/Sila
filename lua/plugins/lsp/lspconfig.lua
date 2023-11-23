@@ -4,6 +4,9 @@ return {
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
 		"williamboman/mason.nvim", -- add it here so it can lazy load, and require when enter buffer
+		{
+			"ray-x/lsp_signature.nvim",
+		},
 		-- change names in file manager and reflect in the code directly
 		-- { "antosha417/nvim-lsp-file-operations", config = true }, -- needs plenary.nvim
 	},
@@ -31,6 +34,17 @@ return {
 		-- used to enable autocompletion (assign to every lsp server config)
 		local capabilities = client_capabilities()
 		-- local capabilities = cmp_nvim_lsp.default_capabilities()
+
+		local lsp_signature = require("lsp_signature")
+		if lsp_signature then
+			lsp_signature.setup({
+				hint_enable = true,
+				bind = true,
+				border = "rounded",
+				wrap = false,
+				max_width = 120,
+			})
+		end
 
 		local map = vim.keymap.set -- for conciseness
 		local opts = { noremap = true, silent = true }
