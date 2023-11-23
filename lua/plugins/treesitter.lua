@@ -1,5 +1,27 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
+	dependencies = {
+		{
+			"nvim-treesitter/nvim-treesitter-context",
+			-- Match the context lines to the source code.
+			-- multiline_threshold = 1,
+			enabled = true,
+			opts = { mode = "cursor", max_lines = 3 },
+			keys = {
+				{
+					"[c",
+					function()
+						-- IDK why but it doesn't work without vim.schedule - hint from Maria config
+						vim.schedule(function()
+							require("treesitter-context").go_to_context()
+						end)
+					end,
+					desc = "Jump to upper context",
+					expr = true,
+				},
+			},
+		},
+	},
 	version = false, -- last release is way too old
 	build = ":TSUpdate",
 	event = { "BufReadPost", "BufWritePost", "BufNewFile" },

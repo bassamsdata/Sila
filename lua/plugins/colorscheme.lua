@@ -22,6 +22,9 @@ return {
 				StatusLine = { guibg = NONE },
 				-- Statement = { fg = "#84ffff", italic = true },
 				-- TreesitterContextBottom = { underline = true, sp = colors.lilac },
+				TreesitterContext = { bg = nil },
+				TreesitterContextLineNumber = { bg = nil },
+				TreesitterContextBottom = { underline = true, sp = "#343434" },
 			},
 			contrast = {
 				cursor_line = false,
