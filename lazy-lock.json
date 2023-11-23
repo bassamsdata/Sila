@@ -7,6 +7,7 @@
   "cmp_luasnip": { "branch": "master", "commit": "05a9ab28b53f71d1aece421ef32fee2cb857a843" },
   "codeium.nvim": { "branch": "main", "commit": "822e762567a0bf50b1a4e733c8c93691934d7606" },
   "conform.nvim": { "branch": "master", "commit": "a5df96556c4c895777bf53177a8704b9b3e884e1" },
+  "corn.nvim": { "branch": "master", "commit": "feece58d801bbedb6ff08d9354deb963f9956034" },
   "dracula.nvim": { "branch": "main", "commit": "7200e64c589f899d29f8963aad7543856d1c2545" },
   "dressing.nvim": { "branch": "master", "commit": "fe3071330a0720ce3695ac915820c8134b22d1b0" },
   "friendly-snippets": { "branch": "main", "commit": "43727c2ff84240e55d4069ec3e6158d74cb534b6" },
