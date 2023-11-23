@@ -6,18 +6,18 @@ This is still work in progress and the readme currently just to track the TODO l
 
 
 ### TODO:
-- Statusline
-- Terminal
-- Folding - statuscol.nvim plugin
-- Colorscheme
-  - Highlights
-  - Cursor highlight change
-- add mini.align
-- add fidget.nvim
-- add lsp count plugin
-- add lsp signature
-- create terminal and fterm.nvim
+[ ] Statusline
+[ ] Terminal
+[ ] Folding - statuscol.nvim plugin
+[ ] Colorscheme
+  [ ] Highlights
+  [ ] Cursor highlight change
+[ ] add mini.align
+[ ] add fidget.nvim
+[ ] add lsp count plugin
+[x] add lsp signature
+[ ] create terminal and fterm.nvim
 
 ### contriubite
-- add select to material.nvim
-- add lazygit
+[x] add select to material.nvim
+[ ] add lazygit
