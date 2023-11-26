@@ -20,16 +20,16 @@ return {
 						-- Value of 'winblend' option
 						winblend = 0,
 						-- Z-index
-						zindex = 1000,
+						zindex = 100,
 					},
 				})
-				for _, key in ipairs({ "n", "N", "*" }) do
-					vim.keymap.set(
-						"n",
-						key,
-						key .. "zv<Cmd>lua MiniMap.refresh({}, { lines = false, scrollbar = false })<CR>"
-					)
-				end
+				-- for _, key in ipairs({ "n", "N", "*" }) do
+				-- 	vim.keymap.set(
+				-- 		"n",
+				-- 		key,
+				-- 		key .. "zv<Cmd>lua MiniMap.refresh({}, { lines = false, scrollbar = false })<CR>"
+				-- 	)
+				-- end
 
 				vim.api.nvim_set_hl(0, "MiniMapSymbolCount", { fg = "#f38ba9" })
 			end

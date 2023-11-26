@@ -25,7 +25,6 @@ return {
     items = {
 
 
-      -- TzaODO:
       new_section("Find file",    "Pick files", "Telescope"),
       new_section("Recent files", "Pick oldfiles",   "Telescope"),
       new_section("Grep text",    "Pick grep_live",  "Telescope"),

@@ -5,7 +5,7 @@ return {
 		opts = {},
 		keys = {
 			{
-				"<leader>xa",
+				"<leader>ta",
 				function()
 					local util = require("core.Util")
 					vim.g.minipairs_disable = not vim.g.minipairs_disable
