@@ -1,6 +1,6 @@
 return {
 	{
-		"bassamsdata/material.nvim",
+		"marko-cerovac/material.nvim",
 		lazy = false,
 		priority = 1000,
 		opts = {
@@ -27,7 +27,7 @@ return {
 				TreesitterContextBottom = { underline = true, sp = "#343434" },
 			},
 			contrast = {
-				cursor_line = false,
+				cursor_line = true,
 			},
 			plugins = {
 				"gitsigns",
@@ -39,6 +39,7 @@ return {
 			disable = {
 				-->other settings
 				background = true,
+				colored_cursor = true, -- Disable the colored cursore,
 			},
 		},
 	},
