@@ -17,7 +17,7 @@ return {
 						end)
 					end,
 					desc = "Jump to upper context",
-					expr = true,
+					-- expr = true,
 				},
 			},
 		},
