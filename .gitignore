@@ -10,3 +10,4 @@
 *.log
 
 sesstion.vim
+*.nvim

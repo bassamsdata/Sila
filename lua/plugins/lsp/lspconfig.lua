@@ -137,6 +137,16 @@ return {
 			capabilities = capabilities,
 			on_attach = on_attach,
 		})
+
+		-- lspconfig["sqlls"].setup({
+		-- 	capabilities = capabilities,
+		-- 	on_attach = on_attach,
+		-- 	cmd = { "sql-language-server", "up", "--method", "stdio" },
+		-- 	filetypes = { "sql", "mysql", "psql" },
+		-- 	root_dir = function(_)
+		-- 		return vim.loop.cwd()
+		-- 	end,
+		-- })
 		-- configure r langauge server
 		lspconfig["marksman"].setup({
 			capabilities = capabilities,
