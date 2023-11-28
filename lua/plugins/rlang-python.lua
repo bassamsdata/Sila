@@ -7,6 +7,21 @@ return {
 			require("cmp_nvim_r").setup({})
 		end,
 	},
-	{ "quarto-dev/quarto-nvim", ft = "quarto", opts = {} },
-	{ "jmbuhr/otter.nvim", ft = "quarto", opts = {} },
+	{
+		"quarto-dev/quarto-nvim",
+		ft = "quarto",
+		dependencies = {
+			"jmbuhr/otter.nvim",
+			dependencies = {
+				{ "neovim/nvim-lspconfig" },
+			},
+			opts = {},
+		},
+		opts = {
+			lspFeatures = {
+				languages = { "r", "python", "julia", "bash", "lua", "html" },
+			},
+		},
+	},
+	{},
 }
