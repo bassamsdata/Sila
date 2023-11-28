@@ -6,6 +6,7 @@ return {
 		"williamboman/mason.nvim", -- add it here so it can lazy load, and require when enter buffer
 		{
 			"ray-x/lsp_signature.nvim",
+			-- ft = "quarto",
 		},
 		-- change names in file manager and reflect in the code directly
 		-- { "antosha417/nvim-lsp-file-operations", config = true }, -- needs plenary.nvim
@@ -140,6 +141,7 @@ return {
 		lspconfig["marksman"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
+			filetypes = { "markdown", "quarto" },
 		})
 
 		-- configure lua server (with special settings)
