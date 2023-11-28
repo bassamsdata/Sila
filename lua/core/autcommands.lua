@@ -70,24 +70,24 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- Mini Modules
 -- =========================================================================
 -- open on buffer enter
-local ok, _ = pcall(require, "mini.map")
-if not ok then
-	return
-else
-	vim.api.nvim_create_autocmd("BufReadPost", {
-		callback = function()
-			if vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t") ~= "Starter" then
-				require("mini.map").open()
-			end
-		end,
-	})
-	-- refresh on window resize
-	vim.api.nvim_create_autocmd("VimResized", {
-		callback = function()
-			require("mini.map").refresh()
-		end,
-	})
-end
+-- local ok, _ = pcall(require, "mini.map")
+-- if not ok then
+-- 	return
+-- else
+vim.api.nvim_create_autocmd("BufReadPost", {
+	callback = function()
+		if vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t") ~= "Starter" then
+			require("mini.map").open()
+		end
+	end,
+})
+-- refresh on window resize
+vim.api.nvim_create_autocmd("VimResized", {
+	callback = function()
+		require("mini.map").refresh()
+	end,
+})
+-- end
 --
 --
 -- close some filetypes with <q>

@@ -3,7 +3,7 @@ return {
 	-- and add mini map to the help pages as well :)
 	{
 		"echasnovski/mini.map",
-		event = "VeryLazy",
+		event = "BufReadPost",
 		config = function()
 			local map = require("mini.map")
 			local gen_integr = map.gen_integration
