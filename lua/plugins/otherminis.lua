@@ -37,27 +37,33 @@ return {
 	},
 	{
 		"echasnovski/mini.hipatterns",
-		event = "BufReadPre",
-		opts = {
-			highlighters = {
-				todo = {
-					-- TODO: hello
-					pattern = "TODO",
-					group = "MiniHipatternsTodo",
-					extmark_opts = { sign_text = "" },
-				},
-				-- LOVE: make many mor󰐑
-				love = {
-					pattern = "LOVE",
-					group = "gitSignsDeletePreview",
-					extmark_opts = { sign_text = "!!", sign_hl_group = "DevIconGraphQL" },
-				},
-				-- highlight the text after LOVE with different highlightv
-				love_love = {
-					pattern = "LOVE: ()%S+.*()",
-					group = "@text.todo.checked",
-				},
-			},
-		},
+		event = "BufReadPost",
+		config = function()
+			local mini_hipatterns = require("mini.hipatterns")
+			if mini_hipatterns then
+				mini_hipatterns.setup({
+					highlighters = {
+						hex_color = require("mini.hipatterns").gen_highlighter.hex_color(),
+						todo = {
+							-- TODO: hello
+							pattern = "TODO",
+							group = "MiniHipatternsTodo",
+							extmark_opts = { sign_text = "" },
+						},
+						-- LOVE: make many mor󰐑
+						love = {
+							pattern = "LOVE",
+							group = "gitSignsDeletePreview",
+							extmark_opts = { sign_text = "!!", sign_hl_group = "DevIconGraphQL" },
+						},
+						-- highlight the text after LOVE with different highlightv
+						love_love = {
+							pattern = "LOVE: ()%S+.*()",
+							group = "@text.todo.checked",
+						},
+					},
+				})
+			end
+		end,
 	},
 }
