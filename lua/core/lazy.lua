@@ -12,17 +12,8 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- use a protected call so we don't error out on first use
-local lazy = require("lazy")
-if not lazy then
-	return
-end
-
-local plugins = "plugins"
-local lsp = "plugins.lsp"
-
 -- load plugins from specifications (The leader key must be set before this)
-lazy.setup({ { import = plugins }, { import = lsp } }, {
+require("lazy").setup({ { import = "plugins" }, { import = "plugins.lsp" } }, {
 	ui = { border = "rounded" },
 	install = {
 		-- Do not automatically install on startup.
@@ -31,6 +22,9 @@ lazy.setup({ { import = plugins }, { import = lsp } }, {
 	-- I like to play with my configs alot so less clutter please.
 	change_detection = { notify = false },
 	performance = {
+		cache = {
+			enabled = true,
+		},
 		rtp = {
 			-- Stuff I don't use.
 			disabled_plugins = {
@@ -41,7 +35,18 @@ lazy.setup({ { import = plugins }, { import = lsp } }, {
 				"tohtml",
 				"tutor",
 				"zipPlugin",
+				"health",
+				"man",
+				"matchit",
+				"matchparen",
 			},
 		},
+	},
+	dev = {
+		-- directory where you store your local plugin projects
+		path = "~/repos",
+		---@type string[] plugins that match these patterns will use your local versions instead of being fetched from GitHub
+		patterns = {}, -- For example {"folke"}
+		fallback = false, -- Fallback to git when local plugin doesn't exist
 	},
 })
