@@ -1,5 +1,17 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
+	version = false, -- last release is way too old
+	cmd = { "TSInstall", "TSBufEnable", "TSUpdate", "TSBufDisable", "TSModuleInfo" },
+	build = ":TSUpdate",
+	event = {
+		"BufReadPre",
+		"BufNewFile",
+	},
+	keys = {
+		{ "<C-cr>", desc = "Increment selection" },
+		{ "<bs>", desc = "Decrement selection", mode = "x" },
+	},
+
 	dependencies = {
 		{
 			"nvim-treesitter/nvim-treesitter-context",
@@ -22,20 +34,13 @@ return {
 			},
 		},
 	},
-	version = false, -- last release is way too old
-	build = ":TSUpdate",
-	event = { "BufReadPost", "BufWritePost", "BufNewFile" },
-	cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
-	keys = {
-		{ "<C-cr>", desc = "Increment selection" },
-		{ "<bs>", desc = "Decrement selection", mode = "x" },
-	},
 	config = function()
 		vim.defer_fn(function()
 			require("nvim-treesitter.configs").setup({
 				highlight = { enable = true },
 				indent = { enable = true },
 				ensure_installed = {
+					"c",
 					"bash",
 					"diff",
 					"html",
@@ -53,6 +58,7 @@ return {
 					"vimdoc",
 					"yaml",
 					"r",
+					"query",
 				},
 				incremental_selection = {
 					enable = true,
