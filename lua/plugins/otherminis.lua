@@ -66,4 +66,6 @@ return {
 			end
 		end,
 	},
+	-- TODO: make keymaps and lazy on keys
+	{ "echasnovski/mini.visits", lazy = true, opts = {} },
 }
