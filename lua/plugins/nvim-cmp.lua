@@ -1,6 +1,7 @@
 return {
 	"hrsh7th/nvim-cmp",
-	event = { "InsertEnter", "CmdlineEnter" },
+	event = { "LspAttach", "InsertCharPre" },
+	-- event = { "InsertEnter", "CmdlineEnter" },
 	dependencies = {
 		"hrsh7th/cmp-buffer", -- source for text in buffer
 		"hrsh7th/cmp-path", -- source for file system paths
@@ -38,7 +39,7 @@ return {
 				["<C-f>"] = cmp.mapping.scroll_docs(4),
 				["<C-S-Space>"] = cmp.mapping.complete(), -- show completion suggestions
 				["<C-e>"] = cmp.mapping.abort(), -- close completion window
-				["<Esc>"] = cmp.mapping.close(),
+				["<§>"] = cmp.mapping.close(),
 				["<Down>"] = function(fb)
 					cmp.close()
 					fb()
