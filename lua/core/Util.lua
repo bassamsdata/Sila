@@ -25,6 +25,30 @@ function M.custom_notify(message, level)
 	}, true, {})
 end
 
+-- TODO: Fix this one
+function M.help_grep()
+	local ok, mini_pick = pcall(require, "mini.pick")
+	if not ok then
+		return
+	end
+
+	-- Get the paths of the help files
+	local paths = vim.api.nvim_get_option("runtimepath")
+	paths = vim.split(paths, ",")
+	local dirs = {}
+	for _, path in ipairs(paths) do
+		local doc_path = path .. "/doc"
+		if vim.fn.isdirectory(doc_path) == 1 then
+			table.insert(dirs, doc_path)
+		end
+	end
+
+	mini_pick.builtin.grep_live({}, { source = { cwd = unpack(dirs) } })
+end
+
+vim.keymap.set("n", "<leader>uh", M.help_grep)
+
+-- TODO: organize that
 function M.grepandopen()
 	vim.ui.input({ prompt = "Enter pattern: " }, function(pattern)
 		if pattern ~= nil then
@@ -34,6 +58,15 @@ function M.grepandopen()
 	end)
 end
 
+function M.helpgrepnopen()
+	vim.ui.input({ prompt = "Enter pattern: " }, function(pattern)
+		if pattern ~= nil then
+			vim.cmd("silent helpgrep " .. pattern)
+			vim.cmd("copen")
+		end
+	end)
+end
+vim.keymap.set("n", "<leader>ug", M.helpgrepnopen)
 --This code below regarding statuscolumn was borrowed from LazyVim.
 --credit to folke/LazyVim https://github.com/LazyVim/LazyVim
 -- TODO: use the statuscolumn plugin.
@@ -43,13 +76,19 @@ end
 ---@param lnum number
 function M.get_signs(buf, lnum)
 	-- Get regular signs
-	-- -@type Sign[]
-	local signs = vim.tbl_map(function(sign)
-		-- -@type Sign
-		local ret = vim.fn.sign_getdefined(sign.name)[1]
-		ret.priority = sign.priority
-		return ret
-	end, vim.fn.sign_getplaced(buf, { group = "*", lnum = lnum })[1].signs)
+	local signs = {}
+
+	if vim.fn.has("nvim-0.10") == 0 then
+		-- Only needed for Neovim <0.10
+		-- Newer versions include legacy signs in nvim_buf_get_extmarks
+		for _, sign in ipairs(vim.fn.sign_getplaced(buf, { group = "*", lnum = lnum })[1].signs) do
+			local ret = vim.fn.sign_getdefined(sign.name)[1]
+			if ret then
+				ret.priority = sign.priority
+				signs[#signs + 1] = ret
+			end
+		end
+	end
 
 	-- Get extmark signs
 	local extmarks = vim.api.nvim_buf_get_extmarks(
@@ -180,65 +219,64 @@ end
 -- Neovim Utils
 --- returns current vim mode name
 function M.get_mode_name()
-  local mode_names = {
-    n         = "no",
-    no        = "n?",
-    nov       = "n?",
-    noV       = "n?",
-    ["no\22"] = "n?",
-    niI       = "ni",
-    niR       = "nr",
-    niV       = "nv",
-    nt        = "nt",
-    v         = "vi",
-    vs        = "vs",
-    V         = "v_",
-    Vs        = "vs",
-    ["\22"]   = "^V",
-    ["\22s"]  = "^V",
-    s         = "se",
-    S         = "s_",
-    ["\19"]   = "^S",
-    i         = "in",
-    ic        = "ic",
-    ix        = "ix",
-    R         = "re",
-    Rc        = "rc",
-    Rx        = "rx",
-    Rv        = "rv",
-    Rvc       = "rv",
-    Rvx       = "rv",
-    c         = "co",
-    cv        = "ex",
-    r         = "..",
-    rm        = "m.",
-    ["r?"]    = "??",
-    ["!"]     = "!!",
-    t         = "te",
-  }
-  return mode_names[vim.api.nvim_get_mode().mode]
+	local mode_names = {
+		n = "no",
+		no = "n?",
+		nov = "n?",
+		noV = "n?",
+		["no\22"] = "n?",
+		niI = "ni",
+		niR = "nr",
+		niV = "nv",
+		nt = "nt",
+		v = "vi",
+		vs = "vs",
+		V = "v_",
+		Vs = "vs",
+		["\22"] = "^V",
+		["\22s"] = "^V",
+		s = "se",
+		S = "s_",
+		["\19"] = "^S",
+		i = "in",
+		ic = "ic",
+		ix = "ix",
+		R = "re",
+		Rc = "rc",
+		Rx = "rx",
+		Rv = "rv",
+		Rvc = "rv",
+		Rvx = "rv",
+		c = "co",
+		cv = "ex",
+		r = "..",
+		rm = "m.",
+		["r?"] = "??",
+		["!"] = "!!",
+		t = "te",
+	}
+	return mode_names[vim.api.nvim_get_mode().mode]
 end
 
 --- returns current vim mode highlight
 function M.get_mode_hl()
-  local mode_hls = {
-    n       = 'CursorLineNr',
-    i       = 'Question',
-    v       = 'Constant',
-    V       = 'VisualMode',
-    ['\22'] = 'VisualMode',
-    c       = 'CursorLineNr',
-    s       = 'SelectMode',
-    S       = 'SelectMode',
-    ['\19'] = "SelectMode",
-    R       = 'ControlMode',
-    r       = 'ControlMode',
-    ['!']   = 'NormalMode',
-    t       = 'TerminalMode',
-  }
+	local mode_hls = {
+		n = "CursorLineNr",
+		i = "Question",
+		v = "Constant",
+		V = "VisualMode",
+		["\22"] = "VisualMode",
+		c = "CursorLineNr",
+		s = "SelectMode",
+		S = "SelectMode",
+		["\19"] = "SelectMode",
+		R = "ControlMode",
+		r = "ControlMode",
+		["!"] = "NormalMode",
+		t = "TerminalMode",
+	}
 
-  return mode_hls[vim.api.nvim_get_mode().mode]
+	return mode_hls[vim.api.nvim_get_mode().mode]
 end
-
 
 return M
