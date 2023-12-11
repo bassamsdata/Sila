@@ -1,8 +1,11 @@
 return {
 	{
 		"marko-cerovac/material.nvim",
-		lazy = false,
+		lazy = true,
 		priority = 1000,
+		init = function()
+			vim.cmd.colorscheme("Material-deep-ocean")
+		end,
 		opts = {
 			styles = { -- Give comments style such as bold, italic, underline etc.
 				comments = { italic = true },
