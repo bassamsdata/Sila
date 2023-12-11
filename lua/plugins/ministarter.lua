@@ -5,8 +5,8 @@ return {
 		opts = function()
 			local logo = table.concat({
 
-				"         .▄▄ · ▪  ▄▄▌   ▄▄▄·          Z",
-				" 🤍 🌿   ▐█ ▀. ██ ██•  ▐█ ▀█      Z    ",
+				"         .▄▄ · ▪  ▄▄▌   ▄▄▄·    󰲓     Z",
+				" 󰩖     ▐█ ▀. ██ ██•  ▐█ ▀█      Z    ",
 				"         ▄▀▀▀█▄▐█·██▪  ▄█▀▀█   z       ",
 				"         ▐█▄▪▐█▐█▌▐█▌▐▌▐█ ▪▐ z         ",
 				"          ▀▀▀▀ ▀▀▀.▀▀▀  ▀  ▀           ",
@@ -25,10 +25,10 @@ return {
     items = {
 
 
-      new_section("Find file",    "Pick files", "Telescope"),
-      new_section("Recent files", "Pick oldfiles",   "Telescope"),
-      new_section("Grep text",    "Pick grep_live",  "Telescope"),
-      -- new_section("Projects",    "Telescope projects",  "Telescope"),
+      new_section("Find file",    "Pick files", "Pick"),
+      new_section("Recent files", "Pick oldfiles",   "Pick"),
+      new_section("Grep text",    "Pick grep_live",  "Pick"),
+      -- new_section("Projects",    "Pick projects",  "Pick"),
       new_section("init.lua",     "e $MYVIMRC",           "Config"),
       new_section("Lazy",         "Lazy",                 "Config"),
       new_section("New file",     "ene | startinsert",    "Built-in"),
