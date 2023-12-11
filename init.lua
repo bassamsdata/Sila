@@ -19,3 +19,6 @@ require("core.keymaps")
 require("core.autcommands")
 require("core.diagnostic_config")
 require("core.mystatusline").setup()
+if vim.g.vscode ~= nil then
+	require("core.vscode")
+end
