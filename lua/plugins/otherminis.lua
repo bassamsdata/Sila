@@ -2,6 +2,14 @@ return {
 	-- TODO: change the highlight color of the view map 'MiniMapSymbolView'
 	-- and add mini map to the help pages as well :)
 	{
+		"echasnovski/mini.misc",
+		opts = {},
+		keys = {
+			{ "<leader>mm", "<cmd>lua MiniMisc.zoom()<cr>", desc = "Zoom" },
+			{ "<leader>ur", "<cmd>lua MiniMisc.setup_auto_root()<cr>", desc = "[U]I [Root]" },
+		},
+	},
+	{
 		"echasnovski/mini.map",
 		event = "BufReadPost",
 		config = function()
@@ -54,7 +62,7 @@ return {
 						love = {
 							pattern = "LOVE",
 							group = "gitSignsDeletePreview",
-							extmark_opts = { sign_text = "!!", sign_hl_group = "DevIconGraphQL" },
+							extmark_opts = { sign_text = "󰩖", sign_hl_group = "WildMenu" },
 						},
 						-- highlight the text after LOVE with different highlightv
 						love_love = {
