@@ -1,10 +1,12 @@
 return {
 	{
 		"echasnovski/mini.clue",
-		event = "VeryLazy",
+		-- event = "VeryLazy",
+		event = "BufReadPost",
 		config = function()
 			local miniclue = require("mini.clue")
-			-- BS: Changed this function and used 'for loop' instead of 'iter' module because it didn't work for me
+			-- mark and macro clues taken from Maria configs - please see the readme for a link to Maria's config
+			-- BS: Changed this function and used 'for loop' instead of 'iter' module
 			-- Add a-z/A-Z marks.
 			local function mark_clues()
 				local marks = {}
@@ -19,7 +21,6 @@ return {
 					if not string.match(key, "^%a") then
 						goto continue
 					end
-
 					-- For global marks, use the file as a description.
 					-- For local marks, use the line number and content.
 					local desc
@@ -34,6 +35,7 @@ return {
 					end
 
 					if desc then
+						table.insert(result, { mode = "n", keys = string.format("'%s", key), desc = desc })
 						table.insert(result, { mode = "n", keys = string.format("`%s", key), desc = desc })
 					end
 
@@ -46,15 +48,16 @@ return {
 			-- Clues for recorded macros.
 			local function macro_clues()
 				local res = {}
-				for _, register in ipairs(vim.split("abcdefghijklmnopqrstuvwxyz", "")) do
+				local registers = "abcdefghijklmnopqrstuvwxyz"
+				for register in registers:gmatch(".") do
 					local keys = string.format('"%s', register)
-					local ok, desc = pcall(vim.fn.getreg, register, 1)
-					if ok and desc ~= "" then
+					-- vim.fn.getreg() is really bad and unconsistent
+					local desc = vim.fn.getreg(register):gsub("[\n\r]", "⏎") -- this is the only way it worked
+					if desc ~= "" then
 						table.insert(res, { mode = "n", keys = keys, desc = desc })
 						table.insert(res, { mode = "v", keys = keys, desc = desc })
 					end
 				end
-
 				return res
 			end
 
@@ -87,7 +90,6 @@ return {
 					{ mode = "n", keys = "]" },
 					-- R and Python
 					{ mode = "n", keys = "\\" },
-					{ mode = "n", keys = "mc" },
 				},
 				window = {
 					-- Delay before showing clue window
