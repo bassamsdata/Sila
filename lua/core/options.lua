@@ -24,6 +24,7 @@ function M.essentials() end
 -- line numbers
 opt.relativenumber = true
 opt.number = true
+opt.scrolloff = 8
 
 -- Enable mouse mode.
 opt.mouse = "a"
@@ -99,6 +100,7 @@ opt.list = true
 
 opt.foldcolumn = "1"
 opt.foldmethod = "indent"
+opt.foldlevel = 1
 -- opt.viewoptions = "cursor, folds"
 opt.foldtext = "v:lua.require'core.Util'.foldtext()"
 
@@ -123,6 +125,10 @@ opt.fillchars:append({
 
 if vim.fn.has("nvim-0.10") == 1 then
 	opt.smoothscroll = true
+	vim.opt.foldmethod = "expr"
+	vim.opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
+else
+	vim.opt.foldmethod = "indent"
 end
 
 return M
