@@ -1,13 +1,12 @@
 return {
 	"neovim/nvim-lspconfig",
+	cmd = { "LspInfo", "LspInstall", "LspUninstall" },
+	-- event = { "LspAttach" },
 	event = { "BufReadPost", "BufNewFile", "BufWritePre" },
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
-		"williamboman/mason.nvim", -- add it here so it can lazy load, and require when enter buffer
-		{
-			"ray-x/lsp_signature.nvim",
-			-- ft = "quarto",
-		},
+		-- "williamboman/mason.nvim", -- add it here so it can lazy load, and require when enter buffer
+		{ "ray-x/lsp_signature.nvim" },
 		-- change names in file manager and reflect in the code directly
 		-- { "antosha417/nvim-lsp-file-operations", config = true }, -- needs plenary.nvim
 	},

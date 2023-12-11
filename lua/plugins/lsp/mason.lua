@@ -1,6 +1,6 @@
 return {
 	"williamboman/mason.nvim",
-	cmd = "Mason",
+  cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
 	dependencies = {
 		"williamboman/mason-lspconfig.nvim",
 		-- TODO: Check this plugin
