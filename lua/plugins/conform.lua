@@ -3,6 +3,7 @@ return {
 	{
 		"stevearc/conform.nvim",
 		event = { "LspAttach", "BufWritePre" },
+		dependencies = { "mason.nvim" }, -- it doesn't work without this
 		cmd = "ConformInfo",
 		keys = {
 			{
