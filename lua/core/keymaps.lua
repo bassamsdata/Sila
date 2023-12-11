@@ -3,7 +3,7 @@ local map = vim.keymap.set
 -- to be able to put most ;) keymaps here and keep lazy loading for some plugins
 local M = {}
 
--- LOVE: I love these mappingb. **They are fun**
+-- LOVE: I love these mappings. **They are fun**
 -- === This is the love section. I really larened alot from those keymaps
 map("x", "/", "<Esc>/\\%V") --search within visual selection - this is magic
 -- Replace all instances of highlighted words
@@ -20,6 +20,11 @@ map("o", "aa", ":<c-u>normal! mzggVG<cr>`z")
 map("n", "x", '"_x') -- delete single character without copying into register
 map({ "n", "i", "!", "v" }, "§", "<esc>")
 map("n", "§§", "<cmd>cclose<cr>") -- close quickfix with §§
+
+-- HACK: this is to insert the fukking hashtag sign in neovim in conjunction
+-- with this keymap in wezterm { key = "1", mods = "OPT", action = act.SendKey({ key = "1", mods = "ALT" }) }
+map("i", "<A-1>", "#")
+
 -- Clear search with <esc>
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" }) -- Open the package manager lazy
@@ -45,8 +50,8 @@ map("n", "<C-l>", "<C-w>l", { desc = "Go to right window", remap = true })
 -- Resize window using <ctrl> arrow keys
 map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
 map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
-map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
-map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+map("n", "<C-Left>", "<cmd>vertical resize +2<cr>", { desc = "Decrease window width" })
+map("n", "<C-Right>", "<cmd>vertical resize -2<cr>", { desc = "Increase window width" })
 
 -- Buffers
 map("n", "<localleader>x", "<cmd>bd<cr>", { desc = "Close buffer" })
@@ -81,6 +86,17 @@ map("n", "J", "J_")
 -- TODO: replace it with treesj plugin
 -- split (opposite of J)
 map("n", "S", "T hr<CR>k$")
+
+-- Add undo break-points
+map("i", ",", ",<c-g>u")
+map("i", ".", ".<c-g>u")
+map("i", ";", ";<c-g>u")
+
+map("n", "<leader>K", "<cmd>norm! K<cr>", { desc = "Keywordprg" })
+
+map("n", "[q", vim.cmd.cprev, { desc = "Previous quickfix" })
+map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
+
 -- === === === === === === === === === === === === === === === === === ===
 -- === === Mini Modules
 -- === === === === === === === === === === === === === === === === === ===
@@ -95,7 +111,7 @@ map("n", "<leader>b", "<cmd>Pick buffers<cr>", { desc = "[F]ind [B]uffers" })
 map("n", "<leader>fk", "<cmd>Pick keymaps<cr>", { desc = "[F]ind [K]eymaps" })
 map("n", "<leader>fh", "<cmd>Pick hl_groups<cr>", { desc = "[F]ind [H]ighlights" })
 
--- I got this from reddit - wow, look how simple it is vs what I've done previously.
+-- I got this from reddit - wow, look how simple it is
 M.mini_files_key = {
 	{
 		"<leader>e",
@@ -107,15 +123,6 @@ M.mini_files_key = {
 		{ desc = "File explorer" },
 	},
 }
--- function()
--- 	local bufname = vim.api.nvim_buf_get_name(0)
--- 	local path = vim.fn.fnamemodify(bufname, ":p")
--- 	if vim.fn.filereadable(path) == 1 then
--- 		MiniFiles.open(bufname, false)
--- 	else
--- 		MiniFiles.close()
--- 	end
--- end,
 
 -- credit to @MariaSolOs
 -- Use dressing for spelling suggestions.
@@ -130,5 +137,14 @@ map("n", "z=", function()
 		end)
 	)
 end, { desc = "Spelling suggestions" })
+
+-- clean registers
+local function clear_registers()
+	local registers = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-"'
+	for register in registers:gmatch(".") do
+		vim.fn.setreg(register, {})
+	end
+end
+map("n", "<leader>rg", clear_registers, { desc = "Clear registers" })
 
 return M
