@@ -100,12 +100,13 @@ opt.list = true
 
 opt.foldcolumn = "1"
 opt.foldmethod = "indent"
-opt.foldlevel = 1
+opt.foldlevel = 99
 -- opt.viewoptions = "cursor, folds"
 opt.foldtext = "v:lua.require'core.Util'.foldtext()"
 
 vim.opt.listchars:append({
 	trail = " ",
+	tab = "   ",
 })
 
 if vim.fn.has("nvim-0.9") == 1 then
@@ -130,5 +131,10 @@ if vim.fn.has("nvim-0.10") == 1 then
 else
 	vim.opt.foldmethod = "indent"
 end
+
+-- Disable health checks for these providers.
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_node_provider = 0
 
 return M
