@@ -12,6 +12,42 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 		vim.highlight.on_yank()
 	end,
 })
+local function save_cursorline_colors()
+	_G.cursorline_bg_orig_gui = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("CursorLine")), "bg", "gui")
+	_G.cursorline_bg_orig_cterm = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("CursorLine")), "bg", "cterm")
+	if _G.cursorline_bg_orig_cterm == "" then
+		_G.cursorline_bg_orig_cterm = "NONE"
+	end
+	if _G.cursorline_bg_orig_gui == "" then
+		_G.cursorline_bg_orig_gui = "NONE"
+	end
+end
+
+local function update_cursorline_colors(is_recording)
+	local gui = vim.o.background == "dark" and "#223322" or "#aaffaa"
+	local cterm = vim.o.background == "dark" and "2" or "10"
+	if not is_recording then
+		gui = _G.cursorline_bg_orig_gui
+		cterm = _G.cursorline_bg_orig_cterm
+	end
+	vim.cmd(string.format("hi CursorLine guibg=%s ctermbg=%s", gui, cterm))
+end
+
+vim.api.nvim_create_augroup("macro_visual_indication", {})
+vim.api.nvim_create_autocmd({ "RecordingEnter", "ColorScheme" }, {
+	group = "macro_visual_indication",
+	callback = function()
+		save_cursorline_colors()
+		update_cursorline_colors(vim.fn.reg_recording() ~= "")
+	end,
+})
+
+vim.api.nvim_create_autocmd("RecordingLeave", {
+	group = "macro_visual_indication",
+	callback = function()
+		update_cursorline_colors(false)
+	end,
+})
 
 -- go to last loc when opening a buffer
 vim.api.nvim_create_autocmd("BufReadPost", {
@@ -27,6 +63,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 		local lcount = vim.api.nvim_buf_line_count(buf)
 		if mark[1] > 0 and mark[1] <= lcount then
 			pcall(vim.api.nvim_win_set_cursor, 0, mark)
+			vim.api.nvim_command("normal! zz")
 		end
 	end,
 })
@@ -70,13 +107,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- Mini Modules
 -- =========================================================================
 -- open on buffer enter
--- local ok, _ = pcall(require, "mini.map")
--- if not ok then
--- 	return
--- else
+local mini_starter = "/Users/bassam/Starter"
 vim.api.nvim_create_autocmd("BufReadPost", {
 	callback = function()
-		if vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t") ~= "Starter" then
+		if vim.api.nvim_buf_get_name(0) ~= mini_starter then
 			require("mini.map").open()
 		end
 	end,
@@ -84,10 +118,11 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- refresh on window resize
 vim.api.nvim_create_autocmd("VimResized", {
 	callback = function()
-		require("mini.map").refresh()
+		if vim.api.nvim_buf_get_name(0) ~= mini_starter then
+			require("mini.map").refresh()
+		end
 	end,
 })
--- end
 --
 --
 -- close some filetypes with <q>
