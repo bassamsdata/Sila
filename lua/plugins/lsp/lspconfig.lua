@@ -150,7 +150,7 @@ return {
 		lspconfig["marksman"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
-			filetypes = { "markdown", "quarto" },
+			-- filetypes = { "markdown", "quarto" },
 		})
 
 		-- configure lua server (with special settings)

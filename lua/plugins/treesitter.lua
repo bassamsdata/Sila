@@ -59,6 +59,7 @@ return {
 					"yaml",
 					"r",
 					"query",
+					"sql",
 				},
 				incremental_selection = {
 					enable = true,

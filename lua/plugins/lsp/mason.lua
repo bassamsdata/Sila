@@ -1,6 +1,7 @@
 return {
 	"williamboman/mason.nvim",
-  cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
+	cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
+	event = { "BufReadPost", "BufNewFile" },
 	dependencies = {
 		"williamboman/mason-lspconfig.nvim",
 		-- TODO: Check this plugin
