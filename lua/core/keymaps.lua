@@ -20,6 +20,8 @@ map("o", "aa", ":<c-u>normal! mzggVG<cr>`z")
 map("n", "x", '"_x') -- delete single character without copying into register
 map({ "n", "i", "!", "v" }, "§", "<esc>")
 map("n", "§§", "<cmd>cclose<cr>") -- close quickfix with §§
+map("n", "gt", "gg") -- Go top of the page
+map("n", "gb", "G") -- Go bottom of the page
 
 -- HACK: this is to insert the fukking hashtag sign in neovim in conjunction
 -- with this keymap in wezterm { key = "1", mods = "OPT", action = act.SendKey({ key = "1", mods = "ALT" }) }
@@ -110,6 +112,9 @@ map("n", "<leader>fk", "<cmd>Pick keymaps<cr>", { desc = "[F]ind [K]eymaps" })
 map("n", "<leader>b", "<cmd>Pick buffers<cr>", { desc = "[F]ind [B]uffers" })
 map("n", "<leader>fk", "<cmd>Pick keymaps<cr>", { desc = "[F]ind [K]eymaps" })
 map("n", "<leader>fh", "<cmd>Pick hl_groups<cr>", { desc = "[F]ind [H]ighlights" })
+map("n", "<leader>gk", "<cmd>Pick git_hunks<cr>", { desc = "[G]it Hun[k]s" })
+map("n", "<leader>gs", "<cmd>Pick git_hunks scope='staged'<cr>", { desc = "[G]it [S]taged" })
+map("n", "<leader>fc", "<cmd>Pick history scope=':'<cr>", { desc = "[F]ind [C]ommands" })
 
 -- I got this from reddit - wow, look how simple it is
 M.mini_files_key = {

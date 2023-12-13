@@ -12,8 +12,8 @@
 Clone the repository and install the plugins:
 
 ```sh
-git clone git@github.com:bassamsdata/Sila ~/.config/bassamsdata/Sila
-NVIM_APPNAME=bassamsdata/Sila/ nvim --headless +"Lazy! sync" +qa
+git clone git@github.com:bassamsdata/Sila ~/.config/Sila
+NVIM_APPNAME=Sila nvim --headless +"Lazy! sync" +qa
 ```
 
 Open Neovim with this config:
@@ -72,9 +72,6 @@ NVIM_APPNAME=bassamsdata/Sila/ nvim
 ### lsp-installer
 
 + [williamboman/mason.nvim](https://dotfyle.com/plugins/williamboman/mason.nvim)
-### motion
-
-+ [chrisgrieser/nvim-spider](https://dotfyle.com/plugins/chrisgrieser/nvim-spider)
 ### nvim-dev
 
 + [nvim-lua/plenary.nvim](https://dotfyle.com/plugins/nvim-lua/plenary.nvim)
