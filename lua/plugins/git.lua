@@ -17,7 +17,19 @@ return {
 				section = { "", "" },
 			},
 			integrations = { diffview = true },
-			-- override/add mappings
+			commit_editor = {
+				kind = "split",
+			},
+			commit_select_view = {
+				kind = "tab",
+			},
+			commit_view = {
+				kind = "split",
+			},
+			popup = {
+				kind = "split",
+			},
+			-- TODO: Change mappings and keys
 			mappings = {
 				-- modify status buffer mappings
 				status = {
@@ -47,15 +59,15 @@ return {
 		opts = {
 			view = {
 				use_icons = true,
-				-- default = {
-				-- 	layout = "diff2_horizontal",
-				-- 	winbar_info = false, -- See ':h diffview-config-view.x.winbar_info'
-				-- },
+				default = {
+					-- layout = "diff2_horizontal",
+					winbar_info = false, -- See ':h diffview-config-view.x.winbar_info'
+				},
 			},
 		},
 		keys = {
-			{ "<leader>gdd", "<cmd>DiffviewOpen<cr>", desc = "DiffviewOpen" },
-			{ "<leader>gdx", "<cmd>DiffviewClose<cr>", desc = "DiffviewClose" },
+			{ "<leader>gdo", "<cmd>DiffviewOpen<cr>", desc = "Diffview [O]pen" },
+			{ "<leader>gdc", "<cmd>DiffviewClose<cr>", desc = "Diffview [C]lose" },
 		},
 	},
 	{
