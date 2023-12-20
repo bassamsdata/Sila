@@ -43,7 +43,7 @@ function M.help_grep()
 		end
 	end
 
-	mini_pick.builtin.grep_live({}, { source = { cwd = unpack(dirs) } })
+	mini_pick.builtin.grep_live({}, { source = { cwd = table.unpack(dirs) } })
 end
 
 vim.keymap.set("n", "<leader>uh", M.help_grep)
@@ -261,12 +261,12 @@ end
 --- returns current vim mode highlight
 function M.get_mode_hl()
 	local mode_hls = {
-		n = "CursorLineNr",
-		i = "Question",
-		v = "Constant",
+		n = "NormalMode",
+		i = "InsertMode",
+		v = "VisualMode",
 		V = "VisualMode",
 		["\22"] = "VisualMode",
-		c = "CursorLineNr",
+		c = "CommandMode",
 		s = "SelectMode",
 		S = "SelectMode",
 		["\19"] = "SelectMode",
