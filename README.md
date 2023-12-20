@@ -13,13 +13,13 @@ Clone the repository and install the plugins:
 
 ```sh
 git clone git@github.com:bassamsdata/Sila ~/.config/Sila
-NVIM_APPNAME=Sila nvim --headless +"Lazy! sync" +qa
+NVIM_APPNAME=Sila/ nvim --headless +"Lazy! sync" +qa
 ```
 
 Open Neovim with this config:
 
 ```sh
-NVIM_APPNAME=bassamsdata/Sila/ nvim
+NVIM_APPNAME=Sila/ nvim
 ```
 
 ## Plugins
