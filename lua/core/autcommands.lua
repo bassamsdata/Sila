@@ -1,9 +1,56 @@
+local U = require("utils")
+
 -- Create automatic naming for groups
 local function augroup(name)
 	return vim.api.nvim_create_augroup("sila_" .. name, { clear = true })
 end
 
-local U = require("core.Util")
+-- -- Open Mini.map omn certain filetypes
+local function openclose()
+	local enable = { "lua", "python" }
+	local ft = vim.bo.filetype
+	if ft == "" then
+		return
+	else
+		for _, v in ipairs(enable) do
+			if ft == v then
+				require("mini.map").open()
+				break
+			end
+		end
+	end
+end
+
+vim.api.nvim_create_user_command("Mess", function()
+	local scratch_buffer = vim.api.nvim_create_buf(false, true)
+	vim.bo[scratch_buffer].filetype = "vim"
+	local messages = vim.split(vim.fn.execute("messages", "silent"), "\n")
+	vim.api.nvim_buf_set_text(scratch_buffer, 0, 0, 0, 0, messages)
+	vim.cmd.sbuffer(scratch_buffer)
+	vim.cmd("$")
+end, {})
+
+-- diagnostic_off when in insert or select mode
+vim.api.nvim_create_autocmd("ModeChanged", {
+	group = augroup("diagnostic_off"),
+	pattern = { "n:i", "v:s" },
+	desc = "Disable diagnostics in insert and select mode",
+	callback = function(e)
+		vim.diagnostic.disable(e.buf)
+		require("corn").toggle("off")
+	end,
+})
+
+-- diagnostic_on when back in normal mode
+vim.api.nvim_create_autocmd("ModeChanged", {
+	group = augroup("diagnostic_on"),
+	pattern = "i:n",
+	desc = "Enable diagnostics when leaving insert mode",
+	callback = function(e)
+		vim.diagnostic.enable(e.buf)
+		require("corn").toggle("on")
+	end,
+})
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -13,8 +60,13 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 local function save_cursorline_colors()
-	_G.cursorline_bg_orig_gui = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("CursorLine")), "bg", "gui")
-	_G.cursorline_bg_orig_cterm = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("CursorLine")), "bg", "cterm")
+	_G.cursorline_bg_orig_gui =
+		vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("CursorLine")), "bg", "gui")
+	_G.cursorline_bg_orig_cterm = vim.fn.synIDattr(
+		vim.fn.synIDtrans(vim.fn.hlID("CursorLine")),
+		"bg",
+		"cterm"
+	)
 	if _G.cursorline_bg_orig_cterm == "" then
 		_G.cursorline_bg_orig_cterm = "NONE"
 	end
@@ -55,7 +107,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 	callback = function(event)
 		local exclude = { "gitcommit" }
 		local buf = event.buf
-		if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].lazyvim_last_loc then
+		if
+			vim.tbl_contains(exclude, vim.bo[buf].filetype)
+			or vim.b[buf].lazyvim_last_loc
+		then
 			return
 		end
 		vim.b[buf].lazyvim_last_loc = true
@@ -68,13 +123,55 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 	end,
 })
 
+-- Activate AI Codeium even when I press space
+-- local function trigger_completion()
+-- 	local line, col = unpack(vim.api.nvim_win_get_cursor(0)) -- Get the current cursor position,
+-- 	local line_content = vim.api.nvim_get_current_line() -- Get the content of the current line as a string
+-- 	local char_before_cursor = string.sub(line_content, col, col)
+-- 	local cmp = require("cmp")
+--
+-- 	if char_before_cursor == "," then
+-- 		-- if the character before the cursor is a comma, disable completion
+-- 		vim.g.cmp_enabled = false
+-- 		cmp.close()
+-- 	elseif char_before_cursor == " " then
+-- 		-- if the character before the cursor is a space, enable codeium completion
+-- 		vim.g.cmp_enabled = true
+-- 		-- cmp.setup.buffer({
+-- 		-- 	sources = {
+-- 		-- 		{ name = "codeium" },
+-- 		-- 	},
+-- 		-- })
+-- 		cmp.complete()
+-- 	else
+-- 		-- Otherwise, disable completion
+-- 		vim.g.cmp_enabled = true
+-- 		-- Otherwise, reset to the original sources configuration
+-- 		cmp.setup.buffer({
+-- 			sources = cmp.config.sources({
+-- 				{ name = "codeium", group_index = 1, priority = 100 },
+-- 				{ name = "otter" },
+-- 				{ name = "nvim_lsp" },
+-- 				{ name = "luasnip" }, -- snippets
+-- 				{ name = "buffer" }, -- text within current buffer
+-- 				{ name = "path" }, -- file system paths
+-- 			}),
+-- 		})
+-- 	end
+-- end
+--
+-- vim.api.nvim_create_autocmd({ "TextChangedI", "TextChangedP" }, {
+-- 	callback = trigger_completion,
+-- 	pattern = "*",
+-- })
+
 -- Change the current line number depend on neovim mode
 -- similar to modicator.nvim plugin
 -- vim.api.nvim_create_autocmd({ "ModeChanged" }, {
---   group = augroup("modechange"),
+-- 	group = augroup("modechange"),
 -- 	callback = function()
 -- 		-- make it work on statuscolumn custom numbering (with ranges over visual selection)
--- 		local hl = vim.api.nvim_get_hl(0, { name = U.get_mode_hl() or "Normal" })
+-- 		local hl = vim.api.nvim_get_hl(0, { name = U.get_mode_hl() })
 -- 		local curline_hl = vim.api.nvim_get_hl(0, { name = "CursorLine" })
 -- 		vim.api.nvim_set_hl(0, "CursorLineNr", { fg = hl.fg, bg = curline_hl.bg })
 -- 	end,
@@ -107,22 +204,22 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- Mini Modules
 -- =========================================================================
 -- open on buffer enter
-local mini_starter = "/Users/bassam/Starter"
-vim.api.nvim_create_autocmd("BufReadPost", {
-	callback = function()
-		if vim.api.nvim_buf_get_name(0) ~= mini_starter then
-			require("mini.map").open()
-		end
-	end,
-})
--- refresh on window resize
-vim.api.nvim_create_autocmd("VimResized", {
-	callback = function()
-		if vim.api.nvim_buf_get_name(0) ~= mini_starter then
-			require("mini.map").refresh()
-		end
-	end,
-})
+-- local mini_starter = "/Users/bassam/Starter"
+-- vim.api.nvim_create_autocmd("BufReadPost", {
+-- 	callback = function()
+-- 		if vim.api.nvim_buf_get_name(0) ~= mini_starter then
+-- 			require("mini.map").open()
+-- 		end
+-- 	end,
+-- })
+-- -- refresh on window resize
+-- vim.api.nvim_create_autocmd("VimResized", {
+-- 	callback = function()
+-- 		if vim.api.nvim_buf_get_name(0) ~= mini_starter then
+-- 			require("mini.map").refresh()
+-- 		end
+-- 	end,
+-- })
 --
 --
 -- close some filetypes with <q>
@@ -141,7 +238,12 @@ vim.api.nvim_create_autocmd("FileType", {
 	},
 	callback = function(event)
 		vim.bo[event.buf].buflisted = false
-		vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+		vim.keymap.set(
+			"n",
+			"q",
+			"<cmd>close<cr>",
+			{ buffer = event.buf, silent = true }
+		)
 	end,
 })
 
