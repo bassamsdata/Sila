@@ -10,7 +10,10 @@ return {
 			-- Add a-z/A-Z marks.
 			local function mark_clues()
 				local marks = {}
-				vim.list_extend(marks, vim.fn.getmarklist(vim.api.nvim_get_current_buf()))
+				vim.list_extend(
+					marks,
+					vim.fn.getmarklist(vim.api.nvim_get_current_buf())
+				)
 				vim.list_extend(marks, vim.fn.getmarklist())
 
 				local result = {}
@@ -30,13 +33,20 @@ return {
 						local line_num = mark.pos[2]
 						local lines = vim.fn.getbufline(mark.pos[1], line_num)
 						if lines and lines[1] then
-							desc = string.format("%d: %s", line_num, lines[1]:gsub("^%s*", ""))
+							desc =
+								string.format("%d: %s", line_num, lines[1]:gsub("^%s*", ""))
 						end
 					end
 
 					if desc then
-						table.insert(result, { mode = "n", keys = string.format("'%s", key), desc = desc })
-						table.insert(result, { mode = "n", keys = string.format("`%s", key), desc = desc })
+						table.insert(
+							result,
+							{ mode = "n", keys = string.format("'%s", key), desc = desc }
+						)
+						table.insert(
+							result,
+							{ mode = "n", keys = string.format("`%s", key), desc = desc }
+						)
 					end
 
 					::continue::
@@ -48,10 +58,11 @@ return {
 			-- Clues for recorded macros.
 			local function macro_clues()
 				local res = {}
-				local registers = "abcdefghijklmnopqrstuvwxyz"
+				local registers = "123456789abcdefghijklmnopqrstuvwxyz" -- when adding , wierd behavior will occur
 				for register in registers:gmatch(".") do
 					local keys = string.format('"%s', register)
-					-- vim.fn.getreg() is really bad and unconsistent
+					-- vim.fn.getreg() is really bad and inconsistent
+					--- @diagnostic disable-next-line: param-type-mismatch
 					local desc = vim.fn.getreg(register):gsub("[\n\r]", "⏎") -- this is the only way it worked
 					if desc ~= "" then
 						table.insert(res, { mode = "n", keys = keys, desc = desc })
@@ -96,7 +107,9 @@ return {
 					delay = 200,
 					config = function(bufnr)
 						local max_width = 0
-						for _, line in ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)) do
+						for _, line in
+							ipairs(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false))
+						do
 							max_width = math.max(max_width, vim.fn.strchars(line))
 						end
 

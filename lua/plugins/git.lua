@@ -11,10 +11,11 @@ return {
 		cmd = "Neogit",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
+			"sindrets/diffview.nvim",
 		},
 		opts = {
 			disable_signs = false,
-			disable_context_highlighting = false,
+			disable_context_highlighting = true,
 			disable_commit_confirmation = false,
 			kind = "vsplit",
 			signs = {

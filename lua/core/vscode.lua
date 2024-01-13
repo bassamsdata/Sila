@@ -26,11 +26,23 @@ Vscode_execute_line_or_selection = function(cur_mode, vscode_command)
 	end
 
 	if visual_mode == "V" then
-		vim.fn.VSCodeNotifyRange(vscode_command, vim.fn.line("v"), vim.fn.line("."), 1)
+		vim.fn.VSCodeNotifyRange(
+			vscode_command,
+			vim.fn.line("v"),
+			vim.fn.line("."),
+			1
+		)
 	else
 		local start_pos, end_pos = vim.fn.getpos([['<]]), vim.fn.getpos([['>]])
 		-- `getpos()` returns `{bufnum, lnum, col, off}`, only 2 and 3 are needed
-		vim.fn.VSCodeNotifyRangePos(vscode_command, start_pos[2], end_pos[2], start_pos[3], end_pos[3] + 1, 1)
+		vim.fn.VSCodeNotifyRangePos(
+			vscode_command,
+			start_pos[2],
+			end_pos[2],
+			start_pos[3],
+			end_pos[3] + 1,
+			1
+		)
 	end
 
 	-- Waite some time because otherwise following commands, when working
@@ -68,4 +80,9 @@ vim.api.nvim_set_keymap(
 	[[:<C-u>lua Vscode_execute_line_or_selection('visual', 'r.runSelection')<CR>]],
 	{ noremap = true, silent = true }
 )
-vim.api.nvim_set_keymap("n", "<Leader>r", [[:<C-u>call VSCodeCall('r.runSelection')<CR>]], { noremap = true })
+vim.api.nvim_set_keymap(
+	"n",
+	"<Leader>r",
+	[[:<C-u>call VSCodeCall('r.runSelection')<CR>]],
+	{ noremap = true }
+)

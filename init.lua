@@ -1,5 +1,5 @@
 -- this protected require function borrowed from venom https://github.com/RaafatTurki/venom/
--- local util = require("core.Util")
+-- local util = require("utils")
 --
 -- function Prequire(name)
 -- 	local ok, var = pcall(require, name)
@@ -11,12 +11,15 @@
 -- 	end
 -- end
 
-require("core.options") -- it's important so I want neovim to tell me if its broken
-require("core.lazy") -- same as option.lua
+if vim.loader then
+	vim.loader.enable()
+end
+require("core.options").initial()
+require("core.lazy")
+-- require("core.options").final()
 require("core.keymaps")
 require("core.autcommands")
-require("core.diagnostic_config")
-require("core.mystatusline")
-if vim.g.vscode ~= nil then
-	require("core.vscode")
-end
+pcall(require, "core.mystatusline")
+-- if vim.g.vscode ~= nil then
+-- 	require("core.vscode")
+-- end

@@ -1,5 +1,5 @@
 -- ensure the colorscheme is loaded so we do not see erorrs
-local colorscheme = "material-deep-ocean"
+local colorscheme = "cockatoo"
 ---@diagnostic disable-next-line: param-type-mismatch
 local ok, _ = pcall(vim.cmd, "colorscheme " .. colorscheme)
 -- TODO: remove this from the options file

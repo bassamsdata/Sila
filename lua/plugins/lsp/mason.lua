@@ -1,22 +1,13 @@
 return {
-	"williamboman/mason.nvim",
+	"williamboman/mason-lspconfig.nvim",
 	cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
-	event = { "BufReadPost", "BufNewFile" },
+	-- event = { "BufReadPost", "BufNewFile" },
 	dependencies = {
-		"williamboman/mason-lspconfig.nvim",
-		-- TODO: Check this plugin
-		-- "WhoIsSethDaniel/mason-tool-installer.nvim",
+		"williamboman/mason.nvim",
 	},
 	config = function()
-		-- import mason
 		local mason = require("mason")
-
-		-- import mason-lspconfig
 		local mason_lspconfig = require("mason-lspconfig")
-
-		-- local mason_tool_installer = require("mason-tool-installer")
-
-		-- enable mason and configure icons
 		mason.setup({
 			ui = {
 				border = "rounded",

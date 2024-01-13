@@ -13,11 +13,15 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- load plugins from specifications (The leader key must be set before this)
-require("lazy").setup({ { import = "plugins" }, { import = "plugins.lsp" } }, {
+require("lazy").setup({
+	{ import = "plugins" },
+	{ import = "plugins.lsp" },
+}, {
 	ui = { border = "rounded" },
 	install = {
 		-- Do not automatically install on startup.
 		missing = false,
+		colorscheme = { "cockatoo", "nano" },
 	},
 	-- I like to play with my configs alot so less clutter please.
 	change_detection = { notify = false },
@@ -50,3 +54,4 @@ require("lazy").setup({ { import = "plugins" }, { import = "plugins.lsp" } }, {
 		fallback = false, -- Fallback to git when local plugin doesn't exist
 	},
 })
+-- vim.cmd.colorscheme("nano")

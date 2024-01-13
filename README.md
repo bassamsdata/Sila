@@ -80,9 +80,6 @@ NVIM_APPNAME=Sila/ nvim
 + [folke/lazy.nvim](https://dotfyle.com/plugins/folke/lazy.nvim)
 ### preconfigured
 
-+ [LazyVim/LazyVim](https://dotfyle.com/plugins/LazyVim/LazyVim)
-### programming-languages-support
-
 + [quarto-dev/quarto-nvim](https://dotfyle.com/plugins/quarto-dev/quarto-nvim)
 ### scrollbar
 

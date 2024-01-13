@@ -3,6 +3,8 @@
         "vim",
         "Prequire",
         "MiniFiles",
-        "NONE"
+        "NONE",
+        "MiniVisits",
+        "MiniFuzzy"
     ]
 }

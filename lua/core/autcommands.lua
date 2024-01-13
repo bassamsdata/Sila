@@ -5,6 +5,52 @@ local function augroup(name)
 	return vim.api.nvim_create_augroup("sila_" .. name, { clear = true })
 end
 
+vim.api.nvim_create_autocmd("BufReadPre", {
+	group = augroup("largefilesettings"),
+	desc = "Set settings for large files.",
+	callback = function(info)
+		if vim.b.large_file ~= nil then
+			return
+		end
+		vim.b.large_file = false
+		local stat = vim.uv.fs_stat(info.match)
+		if stat and stat.size > 1000000 then
+			vim.b.large_file = true
+			vim.opt_local.spell = false
+			vim.opt_local.swapfile = false
+			vim.opt_local.undofile = false
+			vim.opt_local.breakindent = false
+			vim.opt_local.colorcolumn = ""
+			vim.opt_local.statuscolumn = ""
+			vim.opt_local.signcolumn = "no"
+			vim.opt_local.foldcolumn = "0"
+			vim.opt_local.winbar = ""
+			vim.api.nvim_create_autocmd("BufReadPost", {
+				buffer = info.buf,
+				once = true,
+				callback = function()
+					vim.opt_local.syntax = ""
+					return true
+				end,
+			})
+		end
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWinLeave", "BufWritePost" }, {
+	group = augroup("save_view"),
+	callback = function()
+		vim.cmd([[silent! mkview]])
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+	group = augroup("load_view"),
+	callback = function()
+		vim.cmd([[silent! loadview]])
+	end,
+})
+
 -- -- Open Mini.map omn certain filetypes
 local function openclose()
 	local enable = { "lua", "python" }
@@ -21,6 +67,20 @@ local function openclose()
 	end
 end
 
+vim.api.nvim_create_autocmd("FileType", {
+	group = augroup("yanking"),
+	pattern = "qf",
+	desc = "Yank in quickfix with no ||",
+	callback = function()
+		vim.keymap.set(
+			"n",
+			"<leader>y",
+			"<cmd>normal! wy$<cr>",
+			{ noremap = true, silent = true }
+		)
+	end,
+})
+
 vim.api.nvim_create_user_command("Mess", function()
 	local scratch_buffer = vim.api.nvim_create_buf(false, true)
 	vim.bo[scratch_buffer].filetype = "vim"
@@ -29,28 +89,6 @@ vim.api.nvim_create_user_command("Mess", function()
 	vim.cmd.sbuffer(scratch_buffer)
 	vim.cmd("$")
 end, {})
-
--- diagnostic_off when in insert or select mode
-vim.api.nvim_create_autocmd("ModeChanged", {
-	group = augroup("diagnostic_off"),
-	pattern = { "n:i", "v:s" },
-	desc = "Disable diagnostics in insert and select mode",
-	callback = function(e)
-		vim.diagnostic.disable(e.buf)
-		require("corn").toggle("off")
-	end,
-})
-
--- diagnostic_on when back in normal mode
-vim.api.nvim_create_autocmd("ModeChanged", {
-	group = augroup("diagnostic_on"),
-	pattern = "i:n",
-	desc = "Enable diagnostics when leaving insert mode",
-	callback = function(e)
-		vim.diagnostic.enable(e.buf)
-		require("corn").toggle("on")
-	end,
-})
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -167,15 +205,18 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 -- Change the current line number depend on neovim mode
 -- similar to modicator.nvim plugin
--- vim.api.nvim_create_autocmd({ "ModeChanged" }, {
--- 	group = augroup("modechange"),
--- 	callback = function()
--- 		-- make it work on statuscolumn custom numbering (with ranges over visual selection)
--- 		local hl = vim.api.nvim_get_hl(0, { name = U.get_mode_hl() })
--- 		local curline_hl = vim.api.nvim_get_hl(0, { name = "CursorLine" })
--- 		vim.api.nvim_set_hl(0, "CursorLineNr", { fg = hl.fg, bg = curline_hl.bg })
--- 	end,
--- })
+vim.api.nvim_create_autocmd({ "ModeChanged" }, {
+	group = augroup("modechange"),
+	callback = function()
+		-- make it work on statuscolumn custom numbering (with ranges over visual selection)
+		local hl = vim.api.nvim_get_hl(0, { name = U.get_mode_hl() })
+		-- local curline_hl = vim.api.nvim_get_hl(0, { name = "CursorLine" })
+		vim.api.nvim_set_hl(0, "CursorLineNr", {
+			fg = hl.fg,
+			-- bg = curline_hl.bg
+		})
+	end,
+})
 
 -- TODO: move tihs function to helpers
 -- =====** HELP_GREP function **==========================================
@@ -198,28 +239,6 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- -- Define a new command
 -- vim.api.nvim_create_user_command("HelpGrep", help_grep, { nargs = "*", complete = "shellcmd" })
 --========================================================================
---
---
--- =========================================================================
--- Mini Modules
--- =========================================================================
--- open on buffer enter
--- local mini_starter = "/Users/bassam/Starter"
--- vim.api.nvim_create_autocmd("BufReadPost", {
--- 	callback = function()
--- 		if vim.api.nvim_buf_get_name(0) ~= mini_starter then
--- 			require("mini.map").open()
--- 		end
--- 	end,
--- })
--- -- refresh on window resize
--- vim.api.nvim_create_autocmd("VimResized", {
--- 	callback = function()
--- 		if vim.api.nvim_buf_get_name(0) ~= mini_starter then
--- 			require("mini.map").refresh()
--- 		end
--- 	end,
--- })
 --
 --
 -- close some filetypes with <q>

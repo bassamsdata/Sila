@@ -14,6 +14,7 @@ return {
 			return vim.ui.input(...)
 		end
 	end,
+	opts = { select = { backend = { "builtin" } } },
 	-- event = "VeryLazy",
 	-- opts = {},
 	--   config = function()

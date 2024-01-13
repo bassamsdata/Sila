@@ -1,6 +1,7 @@
 return {
 	{
 		"karb94/neoscroll.nvim",
+		cond = not vim.g.vscode,
 		-- event = { "BufReadPost", "BufNewFile" },
 		keys = { "<C-u>", "<C-d>", "zt", "zz", "zb" },
 		enabled = function()
@@ -9,7 +10,7 @@ return {
 		config = function()
 			require("neoscroll").setup({
 				-- All these keys will be mapped to their corresponding default scrolling animation
-				mappings = { "<C-u>", "<C-d>", "<C-b>", "<C-f>", "zt", "zz", "zb" },
+				mappings = { "C-y", "C-e", "<C-u>", "<C-d>", "<C-b>", "<C-f>", "zt", "zz", "zb" },
 				hide_cursor = true, -- Hide cursor while scrolling
 				stop_eof = true, -- Stop at <EOF> when scrolling downwards
 				respect_scrolloff = false, -- Stop scrolling when the cursor reaches the scrolloff margin of the file
