@@ -1,5 +1,4 @@
 return {
-	-- { "cmpadden/pomodoro.nvim", keys = { "<leader>p" }, opts = {} },
 	{
 		"echasnovski/mini.pick",
 		dependencies = {
@@ -131,6 +130,7 @@ return {
 					{ window = { config = center_small } }
 				)
 			end
+			-- Frecency picker
 			-- TODO: enhance this one by remocving mini.fuzzy dependencies and move things outside loops
 			-- this got it from https://github.com/echasnovski/mini.nvim/discussions/609#
 			MiniPick.registry.frecency = function()
@@ -167,14 +167,14 @@ return {
 							for _, index in ipairs(indices) do
 								local path = stritems[index]
 								local match_score = prompt == "" and 0
-									or MiniFuzzy.match(prompt, path).score
+								or MiniFuzzy.match(prompt, path).score
 								if match_score >= 0 then
 									local visit_score = flipped_visits[path] or paths_length
 									table.insert(result, {
 										index = index,
 										-- Give current file high value so it's ranked last
 										score = path == current_file_cased and 999999
-											or match_score + visit_score * 10,
+										or match_score + visit_score * 10,
 									})
 								end
 							end

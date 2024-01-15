@@ -57,12 +57,6 @@ return {
 			vim.g.startuptime_tries = 10
 		end,
 	},
-	-- {
-	-- 	"m4xshen/hardtime.nvim",
-	-- 	event = "VeryLazy",
-	-- 	dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
-	-- 	opts = {},
-	-- },
 	{
 		"Bekaboo/deadcolumn.nvim",
 		event = { "InsertEnter" },
