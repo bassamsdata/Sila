@@ -1,6 +1,6 @@
 local map = vim.keymap.set
 local M = {}
-local U = require("utils")
+local u = require("utils")
 
 -- ── love section ──────────────────────────────────────────────────────
 -- LOVE: I love these mappings. **They are fun**
@@ -12,14 +12,16 @@ map(
 	'"hy:%s/<C-r>h//g<left><left>',
 	{ desc = "Replace all instances" }
 )
+-- Ripgrep go to file by line number
+map("n", "rf", 'yiw?^[a-z]<CR>gf:<C-r>"<CR>')
 -- open grep directly and then open quickfix with the results
-map("n", "<localleader>g", U.grepandopen, { desc = "Grep and open quickfix" })
+map("n", "<localleader>g", u.grepandopen, { desc = "Grep and open quickfix" })
 -- motions -- I really didn't know about such amazing keymaps `:h omap-info`
 -- entire buffer (https://vi.stackexchange.com/a/2321)
 -- like you can do `daa` to delete entire buffer, `yaa` to yank entire buffer
 map("o", "aa", ":<c-u>normal! mzggVG<cr>`z")
 
-map("n", "<C-t>", U.swapBooleanInLine, { desc = "swap boolean" })
+map("n", "<C-t>", u.swapBooleanInLine, { desc = "swap boolean" })
 map("n", "<up>", "<cmd>lua vim.cmd('norm! 4')<cr>", { desc = "enhance jk" })
 map("n", "<down>", "<cmd>lua vim.cmd('norm! 4')<cr>", { desc = "enhance jk" })
 
@@ -28,7 +30,7 @@ map("n", "<C-c>", "<cmd>normal! ciw<cr>a")
 map(
 	"n",
 	"<localleader>m",
-	U.messages_to_quickfix,
+	u.messages_to_quickfix,
 	{ desc = ":Messages to quickfix" }
 )
 
@@ -183,7 +185,9 @@ end
 map("n", "<leader>rg", clear_registers, { desc = "Clear registers" })
 
 -- ── Abbreviations ─────────────────────────────────────────────────────
-vim.keymap.set("!a", "sis", "stylua: ignore start")
-vim.keymap.set("!a", "sie", "stylua: ignore end")
+if vim.fn.has("nvim-0.10") == 1 then
+	vim.keymap.set("!a", "sis", "stylua: ignore start")
+	vim.keymap.set("!a", "sie", "stylua: ignore end")
+end
 
 return M
