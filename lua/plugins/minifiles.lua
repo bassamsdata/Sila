@@ -12,6 +12,15 @@ return {
 				end,
 				{ desc = "File explorer" },
 			},
+			{
+				"-",
+				function()
+					local current_file = vim.fn.expand("%")
+					local _ = require("mini.files").close()
+						or require("mini.files").open(current_file, false)
+					vim.cmd("normal @")
+				end,
+			},
 		},
 		config = function()
 			-- create mappings for splits
