@@ -1,3 +1,4 @@
+-- Modified version - Credit to https://github.com/Bekaboo/nvim for this
 -- Disable default intro message
 vim.opt.shortmess:append("I")
 
