@@ -140,7 +140,7 @@ end
 vim.keymap.set("n", "<leader>ug", M.helpgrepnopen)
 
 --This code below regarding statuscolumn was borrowed from LazyVim.
---credit to folke/LazyVim https://github.com/LazyVim/LazyVim
+--credit to folke/LazyVim
 -- TODO: use the statuscolumn plugin.
 -- Returns a list of regular and extmark signs sorted by priority (low to high)
 -- -@return Sign[]

@@ -344,7 +344,7 @@ local hlgroups = {
 	-- }}}2
 
 	-- LSP {{{2
-	LspReferenceText = { link = "Identifier" },
+	LspReferenceText = { link = "search" },
 	LspReferenceRead = { link = "LspReferenceText" },
 	LspReferenceWrite = { link = "LspReferenceText" },
 	LspSignatureActiveParameter = { link = "IncSearch" },

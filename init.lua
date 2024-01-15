@@ -15,10 +15,9 @@ if vim.loader then
 	vim.loader.enable()
 end
 require("core.options").initial()
-require("core.lazy")
--- require("core.options").final()
-require("core.keymaps")
 require("core.autcommands")
+require("core.lazy")
+require("core.keymaps")
 pcall(require, "core.mystatusline")
 -- if vim.g.vscode ~= nil then
 -- 	require("core.vscode")
