@@ -50,8 +50,15 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
 		vim.cmd([[silent! loadview]])
 	end,
 })
+-- -- write an autocommand to save the session automatically before leaving neovim
+-- vim.api.nvim_create_autocmd({ "VimLeavePre" }, {
+-- 	group = augroup("save_session"),
+-- 	callback = function()
+-- 		vim.cmd([[mksession!]] .. vim.fn.stdpath("data") .. "/session.vim")
+-- 	end,
+-- })
 
--- -- Open Mini.map omn certain filetypes
+-- Open Mini.map omn certain filetypes
 local function openclose()
 	local enable = { "lua", "python" }
 	local ft = vim.bo.filetype
