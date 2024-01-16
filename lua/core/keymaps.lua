@@ -13,20 +13,20 @@ map(
 	{ desc = "Replace all instances" }
 )
 -- Ripgrep go to file by line number
-map("n", "rf", 'yiw?^[a-z]<CR>gf:<C-r>"<CR>')
+map("n", "<localleader>rf", 'yiw?^[a-z]<CR>gf:<C-r>"<CR>')
 -- open grep directly and then open quickfix with the results
 map("n", "<localleader>g", u.grepandopen, { desc = "Grep and open quickfix" })
 -- motions -- I really didn't know about such amazing keymaps `:h omap-info`
 -- entire buffer (https://vi.stackexchange.com/a/2321)
 -- like you can do `daa` to delete entire buffer, `yaa` to yank entire buffer
-map("o", "aa", ":<c-u>normal! mzggVG<cr>`z")
-
-map("n", "<C-t>", u.swapBooleanInLine, { desc = "swap boolean" })
-map("n", "<up>", "<cmd>lua vim.cmd('norm! 4')<cr>", { desc = "enhance jk" })
-map("n", "<down>", "<cmd>lua vim.cmd('norm! 4')<cr>", { desc = "enhance jk" })
-
-map("n", "<C-c>", "<cmd>normal! ciw<cr>a")
-
+-- stylua: ignore start 
+map("o", "aa",             ":<c-u>normal! mzggVG<cr>`z")
+map("n", "<localleader>'", "<cmd>e #<cr>",                      { desc = "Switch to Other Buffer" })
+map("n", "<C-t>",          u.swapBooleanInLine,                 { desc = "swap boolean" })
+map("n", "<up>",           "<cmd>lua vim.cmd('norm! 4')<cr>", { desc = "enhance jk" })
+map("n", "<down>",         "<cmd>lua vim.cmd('norm! 4')<cr>", { desc = "enhance jk" })
+map("n", "<C-c>",          "<cmd>normal! ciw<cr>a")
+-- stylua: ignore end
 map(
 	"n",
 	"<localleader>m",
@@ -84,8 +84,8 @@ map("n", "<C-Left>",  "<cmd>vertical resize +2<cr>", { desc = "Decrease window w
 map("n", "<C-Right>", "<cmd>vertical resize -2<cr>", { desc = "Increase window width" })
 
 -- Buffers
-map("n", "L",              "<cmd>bn<cr>") -- switch to next buffer
-map("n", "H",              "<cmd>bp<cr>") -- switch to previous buffer
+map("n", "L", "<cmd>bn<cr>") -- switch to next buffer
+map("n", "H", "<cmd>bp<cr>") -- switch to previous buffer
 -- stylua: ignore end
 
 -- Make U opposite to u.
@@ -109,7 +109,7 @@ map("x", "y", "ygv<ESC>") -- preserve cursor position on visual yank
 map("n", "==", "==_") -- move cursor to the start of the line on format
 map("x", "=", "=gv_")
 map("n", "J", "J_") -- go to end after a join
--- TODO: replace it with treesj plugin
+-- TODO: replace it with treesj or mini.split plugin
 map("n", "S", "T hr<CR>k$") -- split (opposite of J)
 -- Add undo break-points
 -- map("i", ",", ", <c-g>u") -- caused some problems
@@ -130,20 +130,29 @@ map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
 -- │ ──────────────────────────────────────────────────────  │
 -- └                                                         ┘
 -- stylua: ignore start
-map("n", "<leader>ff",      "<cmd>Pick frecency<cr>",                 { desc = "Find [F]iles" })
-map("n", "<leader><space>", "<cmd>Pick files<cr>",                    { desc = "Find [F]iles" })
-map("n", "<leader>fg",      "<cmd>Pick grep_live<cr>",                { desc = "Find [G]rep_live" })
-map("n", "<leader>fo",      "<cmd>Pick oldfiles<cr>",                 { desc = "Find [O]ld files" })
-map("n", "<leader>fr",      "<cmd>Pick resume<cr>",                   { desc = "Find [R]esume" })
-map("n", "<leader>fh",      "<cmd>Pick help<cr>",                     { desc = "Find [H]elp" })
-map("n", "<leader>fk",      "<cmd>Pick keymaps<cr>",                  { desc = "Find [K]eymaps" })
-map("n", "<leader>b",       "<cmd>Pick buffers<cr>",                  { desc = "Find [B]uffers" })
-map("n", "<leader>fk",      "<cmd>Pick keymaps<cr>",                  { desc = "Find [K]eymaps" })
-map("n", "<leader>fh",      "<cmd>Pick hl_groups<cr>",                { desc = "Find [H]ighlights" })
-map("n", "<leader>fc",      "<cmd>Pick history scope=':'<cr>",        { desc = "Find [C]ommands" })
-map("n", "<leader>fs",      "<cmd>Pick history scope='/'<cr>",        { desc = "Find [S]earch" })
-map("n", "<leader>gk",      "<cmd>Pick git_hunks<cr>",                { desc = "Git Hun[k]s" })
-map("n", "<leader>gs",      "<cmd>Pick git_hunks scope='staged'<cr>", { desc = "Git [S]taged" })
+map("n", "<leader>ff",      "<cmd>Pick frecency<cr>",                     { desc = "Find [F]iles" })
+map("n", "<leader><space>", "<cmd>Pick files<cr>",                        { desc = "Find [F]iles" })
+map("n", "<leader>fg",      "<cmd>Pick grep_live<cr>",                    { desc = "Find [G]rep_live" })
+map("n", "<leader>fG",      "<cmd>Pick grep pattern='<cword>'<cr>",       { desc = "Find [C]urrent word" })
+map("n", "<leader>fo",      "<cmd>Pick oldfiles<cr>",                     { desc = "Find [O]ld files" })
+map("n", "<leader>fr",      "<cmd>Pick resume<cr>",                       { desc = "Find [R]esume" })
+map("n", "<leader>fh",      "<cmd>Pick help<cr>",                         { desc = "Find [H]elp" })
+map("n", "<leader>fk",      "<cmd>Pick keymaps<cr>",                      { desc = "Find [K]eymaps" })
+map("n", "<leader>b",       "<cmd>Pick buffers<cr>",                      { desc = "Find [B]uffers" })
+map("n", "<leader>fk",      "<cmd>Pick keymaps<cr>",                      { desc = "Find [K]eymaps" })
+map("n", "<leader>fh",      "<cmd>Pick hl_groups<cr>",                    { desc = "Find [H]ighlights" })
+map("n", "<leader>fc",      "<cmd>Pick history scope=':'<cr>",            { desc = "Find [C]ommands" })
+map("n", "<leader>fs",      "<cmd>Pick history scope='/'<cr>",            { desc = "Find [S]earch" })
+map("n", "<leader>fv",      "<cmd>Pick visit_paths cwd=''<cr>",           { desc = "Visit paths (all)" })
+map("n", "<leader>fV",      "<cmd>Pick visit_paths<cr>",                  { desc = "Visit paths (cwd)" })
+map("n", "<leader>gk",      "<cmd>Pick git_hunks<cr>",                    { desc = "Git Hun[k]s" })
+map("n", "<leader>gs",      "<cmd>Pick git_hunks scope='staged'<cr>",     { desc = "Git [S]taged" })
+map("n", "<leader>gK",      "<cmd>Pick git_hunks path='%'<cr>",           { desc = "Git Hun[k]s (current)" })
+map("n", "<leader>cr",      "<cmd>Pick lsp scope='references'<cr>",       { desc = "References (LSP)" })
+map("n", "<leader>cS",      "<cmd>Pick lsp scope='workspace_symbol'<cr>", { desc = "Symbols workspace (LSP)" })
+map("n", "<leader>cs",      "<cmd>Pick lsp scope='document_symbol'<cr>",  { desc = "Symbols buffer (LSP)" })
+map("n", "<leader>cd",      "<cmd>Pick diagnostic scope='all'<cr>",       { desc = "Diagnostic workspace" })
+map("n", "<leader>cD",      "<cmd>Pick diagnostic scope='current'<cr>",   { desc = "Diagnostic buffer" })
 -- stylua: ignore end
 
 -- I got this from reddit - wow, look how simple it is
@@ -186,8 +195,8 @@ map("n", "<leader>rg", clear_registers, { desc = "Clear registers" })
 
 -- ── Abbreviations ─────────────────────────────────────────────────────
 if vim.fn.has("nvim-0.10") == 1 then
-	vim.keymap.set("!a", "sis", "stylua: ignore start")
-	vim.keymap.set("!a", "sie", "stylua: ignore end")
+	vim.keymap.set("!a", "sis", "-- stylua: ignore start")
+	vim.keymap.set("!a", "sie", "-- stylua: ignore end")
 end
 
 return M

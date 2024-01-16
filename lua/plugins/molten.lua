@@ -20,7 +20,7 @@ return {
 
 			vim.keymap.set(
 				"n",
-				"<localleader>mi",
+				"<localleader>im",
 				":MoltenInit<CR>",
 				{ desc = "Initialize Molten", silent = true }
 			)

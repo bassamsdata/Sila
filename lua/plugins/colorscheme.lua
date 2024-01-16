@@ -5,7 +5,7 @@ return {
 		-- event = "VeryLazy",
 		-- priority = 1000,
 		init = function()
-			vim.g.material_style = "deep ocean"
+			-- vim.g.material_style = "deep ocean"
 		end,
 		opts = {
 
