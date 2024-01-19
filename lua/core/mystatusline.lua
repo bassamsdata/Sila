@@ -1,36 +1,39 @@
-local git_add_color = vim.api.nvim_get_hl(0, { name = "GitSignsAdd" })
-local git_change_color = vim.api.nvim_get_hl(0, { name = "GitSignsChange" })
-local git_delete_color = vim.api.nvim_get_hl(0, { name = "GitSignsDelete" })
-local statusline_color = vim.api.nvim_get_hl(0, { name = "StatusLine" })
+local hl = require("utils.hi")
+local hl_set = hl.apply_highlight
+-- Apply the background color from 'StatusLine' to 'StatusLineGitAdd', 'StatusLineGitChange', and 'StatusLineGitDelete'
+hl_set("StatusLineGitAdd", {bg = "StatusLine"})
+hl_set("StatusLineGitChange", {bg = "StatusLine"})
+hl_set("StatusLineGitDelete", {bg = "StatusLine"})
 
-git_add_color.background = statusline_color.background
-git_change_color.background = statusline_color.background
-git_delete_color.background = statusline_color.background
-vim.api.nvim_set_hl(0, "StatusLineGitAdd", git_add_color)
-vim.api.nvim_set_hl(0, "StatusLineGitChange", git_change_color)
-vim.api.nvim_set_hl(0, "StatusLineGitDelete", git_delete_color)
-
+-- Define a table for the 'StatusLineNormal' highlight group
 local statusline_mode_color = {
 	["bg"] = "white",
 	["fg"] = "black",
 	["bold"] = true,
 }
-vim.api.nvim_set_hl(0, "StatusLineNormal", statusline_mode_color)
+-- Apply the 'StatusLineNormal' color to 'StatusLineNormal'
+hl_set("StatusLineNormal", statusline_mode_color)
+-- Change the background color for 'StatusLineInsert' and 'StatusLineVisual'
 statusline_mode_color.bg = "LightGreen"
-vim.api.nvim_set_hl(0, "StatusLineInsert", statusline_mode_color)
+hl_set("StatusLineInsert", statusline_mode_color)
 statusline_mode_color.bg = "LightMagenta"
-vim.api.nvim_set_hl(0, "StatusLineVisual", statusline_mode_color)
-vim.api.nvim_set_hl(0, "StatusLineLsp", {
-	["fg"] = "white",
-	["bg"] = statusline_color.background,
-})
+hl_set("StatusLineVisual", statusline_mode_color)
+-- Apply the foreground color from 'StatusLine' to the background color of 'StatusLineLsp'
+hl_set("StatusLineLsp", {fg = "StatusLine"})
 
 local modes_map = {
 	["n"] = "NORMAL",
+	["no"] = "OP-PENDING",
+	["nov"] = "OP-PENDING",
+	["noV"] = "OP-PENDING",
+	["no\22"] = "OP-PENDING",
 	["i"] = "INSERT",
 	["V"] = "V-LINE",
 	[""] = "V-BLOCK",
+	["R"] = "REPLACE",
 	["c"] = "COMMAND",
+	["t"] = "TERMINAL",
+	["ntT"] = "TERMINAL",
 }
 
 local function get_mode_color()
