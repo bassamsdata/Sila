@@ -79,12 +79,6 @@ return {
 						}
 					end,
 				},
-				-- content = {
-				-- 	format = nil,
-				-- },
-				-- lsp_progress = {
-				-- 	duration_last = 500,
-				-- },
 			})
 		end,
 	},

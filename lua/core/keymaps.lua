@@ -33,7 +33,12 @@ map(
 	u.messages_to_quickfix,
 	{ desc = ":Messages to quickfix" }
 )
-
+map(
+	"n",
+	"<Leader>tr",
+	':execute "!trans :ar " . expand("<cword>")<CR>',
+	{ desc = "Translate word" }
+)
 map("n", "<localleader>d", function()
 	return ":e " .. vim.fn.expand("%:p:h") .. "/"
 end, { expr = true }) -- NOTE: here ths **expr** is so important
