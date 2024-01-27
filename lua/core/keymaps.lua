@@ -183,6 +183,17 @@ map("n", "z=", function()
 	)
 end, { desc = "Spelling suggestions" })
 
+-- ── Terminal ──────────────────────────────────────────────────────────
+map("n", "<leader>th", function()
+	require("nvterm.terminal").new("horizontal")
+end, { desc = "New horizontal term" })
+map("n", "<leader>tv", function()
+	require("nvterm.terminal").new("vertical")
+end, { desc = "New vertical term" })
+map("n", "<leader>tf", function()
+	require("nvterm.terminal").new("float")
+end, { desc = "New tab term" })
+
 -- ── clean registers ───────────────────────────────────────────────────
 local function clear_registers()
 	local registers =
