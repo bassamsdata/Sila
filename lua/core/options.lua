@@ -100,5 +100,17 @@ end
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_node_provider = 0
+
+if vim.g.neovide then
+	vim.g.neovide_transparency = 1
+	vim.g.neovide_input_macos_alt_is_meta = true
+	vim.g.neovide_cursor_animation_length = 0.2
+	vim.g.neovide_cursor_trail_size = 0.2
+	vim.g.neovide_cursor_antialiasing = false
+	vim.g.neovide_cursor_animate_in_insert_mode = true
+	vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
+	vim.keymap.set("i", "<D-v>", "<ESC>pli") -- Paste insert mode
+end
+
 --
 return M
