@@ -1,74 +1,65 @@
--- Modifeied verstion using lua instead of json. credit to macro-nvim, https://github.com/Bekaboo/nvim/blob/master/plugin/colorswitch.lua
--- TODO: why not trying to use a table inside this instead of a separate file
-
--- stylua: ignore start
-local colors_file =
-vim.fs.joinpath( vim.fn.stdpath("config") --[[@as string]], "lua/color_scheme.lua")
--- stylua: ignore end
+-- total rewrite version, thanks to Bekaboo "https://github.com/Bekaboo/nvim/blob/master/plugin/colorswitch.lua"
+-- thanks to nvchad as well for the idea of dofile and replace_word
 
 local M = {}
+M.color_scheme = M.color_scheme or {
+	bg = "dark",
+	colors_name = "nano",
+}
 
-function M.handle_file(action, path, str)
-	local file = io.open(path, action == "read" and "r" or "w")
-	if not file then
-		return action == "read" and nil or false
-	end
-	if action == "read" then
-		local content = file:read("*a")
-		file:close()
-		return content or ""
-	else
-		file:write("return {\n")
-		for key, value in pairs(str) do
-			file:write(key .. ' = "' .. value .. '",\n')
-		end
-		file:write("}\n")
-		file:close()
-		return true
-	end
+M.file_path = vim.fn.stdpath("config") .. "/plugin/colorswitch.lua"
+
+if M.color_scheme.bg ~= vim.go.bg then
+	vim.go.bg = M.color_scheme.bg
 end
 
--- FIX: enhance this process since we are requiring the file twice - maybe pcall would help
--- local file = io.open("color_scheme.lua", "r")
--- if file == nil then
--- 	file = io.open("color_scheme.lua", "w")
--- 	file:write('return {colors_name = "nano", bg = vim.go.bg}\n')
--- 	file:close()
--- else
--- 	file:close()
--- end
-
-local saved = require("color_scheme")
--- if not ok then
--- 	local file = io.open("color_scheme.lua", "w")
--- 	file:write('return {"colors_name = "nano", bg = vim.go.bg"}\n')
--- 	file:close()
--- end
-saved.colors_name = saved.colors_name or "nano"
-
-if saved.bg and saved.bg ~= vim.go.bg then
-	vim.go.bg = saved.bg
-end
-
-if saved.colors_name and saved.colors_name ~= vim.g.colors_name then
+if M.color_scheme.colors_name ~= vim.g.colors_name then
 	vim.cmd.colorscheme({
-		args = { saved.colors_name },
+		args = { M.color_scheme.colors_name },
 		mods = { emsg_silent = true },
 	})
 end
 
+function M.replace_word(old, new)
+	local file, err = io.open(M.file_path, "r")
+	if not file then
+		vim.notify("Failed to open file: " .. err, vim.log.levels.ERROR)
+		return
+	end
+	local content = file:read("*all")
+	file:close()
+	-- TODO: vim.g.colors_name only output the first word - try to implemtnt vim.fn.getcompletion('', 'color')
+	-- local added_pattern = string.gsub(old, "-", "%%-") -- add % before - if exists
+	local new_content = content:gsub(old, new)
+	file, err = io.open(M.file_path, "w")
+	if not file then
+		vim.notify("Failed to open file for writing: " .. err, vim.log.levels.ERROR)
+		return
+	end
+	file:write(new_content)
+	file:close()
+end
+
 vim.api.nvim_create_autocmd("Colorscheme", {
 	group = vim.api.nvim_create_augroup("ColorSwitch", {}),
-	desc = "Spawn setbg/setcolors on colorscheme change.",
+	desc = "Update color scheme on colorscheme change.",
 	callback = function()
-		local data = require("color_scheme")
-		if data.colors_name ~= vim.g.colors_name or data.bg ~= vim.go.bg then
-			data.colors_name = vim.g.colors_name
-			data.bg = vim.go.bg
-			if not M.handle_file("write", colors_file, data) then
-				return
+		-- we can utilize dofile() here but this option is better
+		local old = M.color_scheme
+		vim.schedule(function()
+			local new = vim.g.colors_name
+			local n_bg = vim.go.bg
+			if new ~= old.colors_name or n_bg ~= old.bg then
+				M.replace_word(old.bg, n_bg)
+				M.replace_word(old.colors_name, new)
+				pcall(vim.system, { "setbg", vim.go.bg })
+				pcall(vim.system, { "setcolor", vim.g.colors_name })
+				M.color_scheme = {
+					bg = n_bg,
+					colors_name = new,
+				}
 			end
-		end
+		end)
 	end,
 })
 
