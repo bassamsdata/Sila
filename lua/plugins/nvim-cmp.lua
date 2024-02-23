@@ -1,14 +1,14 @@
+local function get_bufnrs() -- this fn from Nv-macro, thanks
+	return vim.b.bigfile and {} or { vim.api.nvim_get_current_buf() }
+end
+
 -- Initialize global variable for cmp-nvim toggle
 vim.g.cmp_enabled = true
 return {
 	{
 		"hrsh7th/cmp-buffer", -- source for text in buffer
-		event = { "CmdlineEnter", "InsertEnter" },
+		event = { "CmdlineEnter" },
 		dependencies = "hrsh7th/nvim-cmp",
-	},
-	{
-		"hrsh7th/cmp-nvim-lsp",
-		event = "InsertEnter",
 	},
 	{
 		"hrsh7th/cmp-cmdline",
@@ -17,8 +17,10 @@ return {
 	},
 	{
 		"hrsh7th/nvim-cmp",
+		cond = not vim.b.bigfile,
 		event = { "LspAttach", "InsertCharPre" },
 		dependencies = {
+			"hrsh7th/cmp-nvim-lsp",
 			"hrsh7th/cmp-path", -- source for file system paths
 			"L3MON4D3/LuaSnip", -- snippet engine
 			"saadparwaiz1/cmp_luasnip", -- for autocompletion
@@ -40,10 +42,10 @@ return {
 			cmp.setup({
 				-- Other configurations...
 				enabled = function()
-					return vim.g.cmp_enabled
+					return not vim.b.bigfile
 				end,
 				completion = {
-					completeopt = "menu,menuone,preview,noselect",
+					completeopt = "menu,menuone,noinsert,noselect",
 				},
 				snippet = { -- configure how nvim-cmp interacts with snippet engine
 					expand = function(args)
@@ -51,21 +53,36 @@ return {
 					end,
 				},
 				mapping = cmp.mapping.preset.insert({
-					["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
-					["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
+          -- stylua: ignore start
+					["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select, }),
+					["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select, }),
 					["<C-b>"] = cmp.mapping.scroll_docs(-4),
-					["<C-f>"] = cmp.mapping.scroll_docs(4),
 					["<C-,>"] = cmp.mapping.complete(), -- show completion suggestions
-					["<C-e>"] = cmp.mapping.abort(), -- close completion window
-					["<§>"] = cmp.mapping.close(),
-					-- ["<Down>"] = function(fb)
-					-- 	cmp.close()()
-					-- end,
+
+					-- stylua: ignore end
+					-- [F]orce show the cmp menu
+					["<C-f>"] = cmp.mapping.complete({ -- trigger ai sources only
+						config = {
+							sources = {
+								{ name = "codeium" },
+								{ name = "cody" },
+							},
+						},
+					}),
+					["<C-e>"] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.abort()
+						else
+							fallback()
+						end
+					end, { "i", "c" }),
+					["<C-l>"] = cmp.mapping.close(),
 					["<CR>"] = cmp.mapping.confirm({ select = false }),
+					["<C-y>"] = cmp.mapping.confirm({ select = true }),
 					-- TODO: if statement to accept codeium suggestions.
 					["<Tab>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
-							cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+							cmp.select_next_item()
 						elseif luasnip.expand_or_locally_jumpable() then
 							luasnip.expand_or_jump()
 						else
@@ -74,7 +91,7 @@ return {
 					end, { "i", "s", "c" }),
 					["<S-Tab>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
-							cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
+							cmp.select_prev_item()
 						elseif luasnip.expand_or_locally_jumpable(-1) then
 							luasnip.jump(-1)
 						else
@@ -85,11 +102,18 @@ return {
 				-- sources for autocompletion
 				sources = cmp.config.sources({
 					{ name = "codeium", group_index = 1, priority = 100 },
-					{ name = "cmp_tabnine" },
+					{ name = "cody" },
 					{ name = "otter" },
-					{ name = "nvim_lsp" },
-					{ name = "luasnip" }, -- snippets
-					{ name = "buffer" }, -- text within current buffer
+					{ name = "cmp_r" },
+					{ name = "nvim_lsp", max_item_count = 20 },
+					{ name = "luasnip", max_item_count = 3 }, -- snippets
+					{
+						name = "buffer",
+						max_item_count = 8,
+						option = {
+							get_bufnrs = get_bufnrs,
+						},
+					}, -- text within current buffer
 					{ name = "path" }, -- file system paths
 				}),
 				-- configure lspkind for vs-code like pictograms in completion menu
@@ -101,7 +125,8 @@ return {
 						symbol_map = {
 							Codeium = "",
 							otter = "🦦",
-							TabNine = "",
+							Cody = "",
+							cmp_r = "󰺾 ",
 						},
 					}),
 				},
@@ -112,7 +137,6 @@ return {
 						border = "rounded",
 						winhighlight = "",
 						-- winhighlight = 'CursorLine:Normal',
-						scrollbar = "║",
 					},
 					---@diagnostic disable-next-line: missing-fields
 					documentation = {
@@ -123,7 +147,7 @@ return {
 					},
 				},
 				experimental = {
-					ghost_text = { hl_group = "LspCodeLens" },
+					-- ghost_text = { hl_group = "LspCodeLens" },
 				},
 			})
 			cmp.setup.cmdline({ "/", "?" }, {
@@ -131,17 +155,28 @@ return {
 					entries = { name = "wildmenu", separator = "|" },
 				},
 				sources = {
-					{ name = "buffer" },
+					{
+						name = "buffer",
+						option = {
+							get_bufnrs = get_bufnrs,
+						},
+					},
 				},
 			})
-			-- TODO: implement exceptions: https://github.com/hrsh7th/nvim-cmp/wiki/Advanced-techniques#disabling-cmdline-completion-for-certain-commands-such-as-increname
+			-- FIX: the view show up with name variable which is not good.
 			cmp.setup.cmdline(":", {
 				view = {
-					entries = { name = "wildmenu", separator = "|" },
+					entries = { "native" },
 				},
 				sources = {
-					{ name = "path" },
-					{ name = "cmdline" },
+					{ name = "path", group_index = 1 },
+					{
+						name = "cmdline",
+						option = {
+							ignore_cmds = {},
+						},
+						group_index = 2,
+					},
 				},
 			})
 		end,
