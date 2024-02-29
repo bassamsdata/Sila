@@ -1,6 +1,9 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
+		cond = function()
+			return not vim.b.large_file
+		end,
 		version = false, -- last release is way too old
 		cmd = {
 			"TSInstall",
@@ -68,11 +71,18 @@ return {
 
 							keymaps = {
 								-- You can use the capture groups defined in textobjects.scm
+								["is"] = {
+									query = "@comment_and_code",
+									desc = "Next comment and code",
+								},
+
 								["af"] = "@function.outer",
 								["if"] = "@function.inner",
 								["al"] = "@loop.outer",
 								["il"] = "@loop.inner",
 								["ac"] = "@conditional.outer",
+								["ig"] = "@assignment.inner",
+								["ag"] = "@assignment.outer",
 								-- You can optionally set descriptions to the mappings (used in the desc parameter of
 								-- nvim_buf_set_keymap) which plugins like which-key display
 								["ic"] = {

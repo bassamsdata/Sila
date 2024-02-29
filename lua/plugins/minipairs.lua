@@ -1,8 +1,9 @@
 return {
 	{ -- TRY: try this one
 		"altermo/ultimate-autopair.nvim",
-		event = { "InsertEnter", "CmdlineEnter" },
+		event = { "InsertCharPre" },
 		opts = {
+			cmap = false, --cmap stands for cmd-line map
 			tabout = { -- *ultimate-autopair-map-tabout-config*
 				enable = false,
 				map = "<A-tab>", --string or table
@@ -11,7 +12,7 @@ return {
 				--contains extension config
 				multi = false,
 				--use multiple configs (|ultimate-autopair-map-multi-config|)
-				hopout = false,
+				hopout = true,
 				-- (|) > tabout > ()|
 				do_nothing_if_fail = true,
 				--add a module so that if close fails
@@ -19,26 +20,6 @@ return {
 			},
 		},
 	},
-	-- {
-	-- 	"echasnovski/mini.pairs",
-	-- 	event = "InsertEnter",
-	-- 	opts = {},
-	-- 	keys = {
-	-- 		{
-	-- 			"<leader>ta",
-	-- 			function()
-	-- 				local util = require("utils")
-	-- 				vim.g.minipairs_disable = not vim.g.minipairs_disable
-	-- 				if vim.g.minipairs_disable then
-	-- 					util.custom_notify("Disabled auto pairs", "INFO")
-	-- 				else
-	-- 					util.custom_notify("Enabled auto pairs", "INFO")
-	-- 				end
-	-- 			end,
-	-- 			desc = "Toggle auto pairs",
-	-- 		},
-	-- 	},
-	-- },
 	{
 		"echasnovski/mini.surround",
 		keys = { "gsa", { "gs", mode = "v" } },

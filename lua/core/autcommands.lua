@@ -1,21 +1,35 @@
 local U = require("utils")
+local autocmd = vim.api.nvim_create_autocmd
 
 -- Create automatic naming for groups
 local function augroup(name)
 	return vim.api.nvim_create_augroup("sila_" .. name, { clear = true })
 end
-
-vim.api.nvim_create_autocmd("BufReadPre", {
+autocmd("BufReadPre", {
 	group = augroup("largefilesettings"),
 	desc = "Set settings for large files.",
 	callback = function(info)
-		if vim.b.large_file ~= nil then
+		vim.b.midfile = false
+		vim.b.bigfile = false
+		local stat = vim.uv.fs_stat(info.match)
+		if not stat then
 			return
 		end
-		vim.b.large_file = false
-		local stat = vim.uv.fs_stat(info.match)
-		if stat and stat.size > 1000000 then
-			vim.b.large_file = true
+		if stat.size > 48000 then
+			vim.b.midfile = true
+			autocmd("BufReadPost", {
+				buffer = info.buf,
+				once = true,
+				callback = function()
+					vim.schedule(function()
+						pcall(vim.treesitter.stop, info.buf)
+					end)
+					return true
+				end,
+			})
+		end
+		if stat.size > 1024000 then
+			vim.b.bigfile = true
 			vim.opt_local.spell = false
 			vim.opt_local.swapfile = false
 			vim.opt_local.undofile = false
@@ -25,31 +39,25 @@ vim.api.nvim_create_autocmd("BufReadPre", {
 			vim.opt_local.signcolumn = "no"
 			vim.opt_local.foldcolumn = "0"
 			vim.opt_local.winbar = ""
-			vim.api.nvim_create_autocmd("BufReadPost", {
-				buffer = info.buf,
-				once = true,
-				callback = function()
-					vim.opt_local.syntax = ""
-					return true
-				end,
-			})
+			vim.cmd.syntax("off")
 		end
 	end,
 })
 
-vim.api.nvim_create_autocmd({ "BufWinLeave", "BufWritePost" }, {
+autocmd({ "BufWinLeave", "BufWritePost" }, {
 	group = augroup("save_view"),
 	callback = function()
 		vim.cmd([[silent! mkview]])
 	end,
 })
 
-vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+autocmd({ "BufWinEnter" }, {
 	group = augroup("load_view"),
 	callback = function()
 		vim.cmd([[silent! loadview]])
 	end,
 })
+
 -- -- write an autocommand to save the session automatically before leaving neovim
 -- vim.api.nvim_create_autocmd({ "VimLeavePre" }, {
 -- 	group = augroup("save_session"),
@@ -60,7 +68,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
 
 -- Open Mini.map omn certain filetypes
 local function openclose()
-	local enable = { "lua", "python" }
+	local enable = { "lua", "python", "r" }
 	local ft = vim.bo.filetype
 	if ft == "" then
 		return
@@ -74,7 +82,7 @@ local function openclose()
 	end
 end
 
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
 	group = augroup("yanking"),
 	pattern = "qf",
 	desc = "Yank in quickfix with no ||",
@@ -98,12 +106,13 @@ vim.api.nvim_create_user_command("Mess", function()
 end, {})
 
 -- Highlight on yank
-vim.api.nvim_create_autocmd("TextYankPost", {
+autocmd("TextYankPost", {
 	group = augroup("highlight_yank"),
 	callback = function()
 		vim.highlight.on_yank()
 	end,
 })
+
 local function save_cursorline_colors()
 	_G.cursorline_bg_orig_gui =
 		vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("CursorLine")), "bg", "gui")
@@ -131,7 +140,7 @@ local function update_cursorline_colors(is_recording)
 end
 
 vim.api.nvim_create_augroup("macro_visual_indication", {})
-vim.api.nvim_create_autocmd({ "RecordingEnter", "ColorScheme" }, {
+autocmd({ "RecordingEnter", "ColorScheme" }, {
 	group = "macro_visual_indication",
 	callback = function()
 		save_cursorline_colors()
@@ -139,7 +148,7 @@ vim.api.nvim_create_autocmd({ "RecordingEnter", "ColorScheme" }, {
 	end,
 })
 
-vim.api.nvim_create_autocmd("RecordingLeave", {
+autocmd("RecordingLeave", {
 	group = "macro_visual_indication",
 	callback = function()
 		update_cursorline_colors(false)
@@ -147,7 +156,7 @@ vim.api.nvim_create_autocmd("RecordingLeave", {
 })
 
 -- go to last loc when opening a buffer
-vim.api.nvim_create_autocmd("BufReadPost", {
+autocmd("BufReadPost", {
 	group = augroup("last_loc"),
 	callback = function(event)
 		local exclude = { "gitcommit" }
@@ -175,7 +184,8 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 -- Change the current line number depend on neovim mode
 -- similar to modicator.nvim plugin
-vim.api.nvim_create_autocmd({ "ModeChanged" }, {
+
+autocmd({ "ModeChanged" }, {
 	group = augroup("modechange"),
 	callback = function()
 		-- make it work on statuscolumn custom numbering (with ranges over visual selection)
@@ -210,9 +220,9 @@ vim.api.nvim_create_autocmd({ "ModeChanged" }, {
 -- vim.api.nvim_create_user_command("HelpGrep", help_grep, { nargs = "*", complete = "shellcmd" })
 --========================================================================
 --
---
+
 -- close some filetypes with <q>
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
 	group = augroup("close_with_q"),
 	pattern = {
 		"help",
@@ -237,7 +247,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Auto create dir when saving a file, in case some intermediate directory does not exist
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+autocmd({ "BufWritePre" }, {
 	group = augroup("auto_create_dir"),
 	callback = function(event)
 		if event.match:match("^%w%w+://") then

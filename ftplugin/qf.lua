@@ -1,3 +1,4 @@
+-- thanks to Bekaboo for this https://github.com/Bekaboo/nvim
 vim.bo.buflisted = false
 vim.opt_local.spell = false
 vim.opt_local.rnu = false

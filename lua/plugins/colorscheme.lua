@@ -19,7 +19,7 @@ return {
 				types = {},
 			},
 			custom_highlights = {
-				CursorLine = { bg = "#101c24" },
+				-- CursorLine = { bg = "#101c24" },
 				NormalMode = { fg = "#84ffff" },
 				VisualMode = { fg = "#226142" },
 				InsertMode = { fg = "#cb4251" },

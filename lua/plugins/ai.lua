@@ -1,7 +1,7 @@
 return {
 	{
 		"Exafunction/codeium.nvim",
-		cond = not vim.g.vscode,
+		cond = not vim.g.vscode or not vim.b.bigfile,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 		},
@@ -9,15 +9,18 @@ return {
 		build = ":Codeium Auth",
 		opts = {},
 	},
+
 	{
-		"tzachar/cmp-tabnine",
-		event = "InsertEnter",
-		build = "./install.sh",
-		dependencies = "hrsh7th/nvim-cmp",
-		opts = {
-			show_prediction_strength = false,
+		"sourcegraph/sg.nvim",
+		cond = not vim.g.vscode or not vim.b.bigfile,
+		event = "LspAttach",
+		cmd = "CodyToggle",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
 		},
+		opts = { enable_cody = true },
 	},
+
 	-- {
 	-- 	"codota/tabnine-nvim",
 	-- 	cmd = "TabnineEnable",

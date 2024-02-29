@@ -29,10 +29,14 @@ function M.custom_notify(message, level)
 end
 
 local swap_pairs = {
+  -- stylua: ignore start 
 	{ "true", "false" },
-	{ "1", "0" },
-	{ "foo", "bar" },
+	{ "1",    "0"     },
+	{ "foo",  "bar"   },
 	{ "TRUE", "FALSE" },
+	{ "fg",   "bg"    },
+	{ "True", "False" },
+	-- stylua: ignore end
 }
 
 function M.swapBooleanInLine()
@@ -48,6 +52,78 @@ function M.swapBooleanInLine()
 		end
 	end
 	vim.api.nvim_set_current_line(line)
+end
+
+-- path to colorswitch file
+M.file_path = vim.fn.stdpath("config") .. "/plugin/colorswitch.lua"
+
+function M.replace_word(old, new)
+	local file, err = io.open(M.file_path, "r")
+	if not file then
+		vim.notify("Failed to open file: " .. err, vim.log.levels.ERROR)
+		return
+	end
+	local content = file:read("*all")
+	file:close()
+	-- TODO: vim.g.colors_name only output the first word - try to implemtnt vim.fn.getcompletion('', 'color')
+	-- or: do custom command to change colorscheme
+	-- local added_pattern = string.gsub(old, "-", "%%-") -- add % before - if exists
+	local new_content = content:gsub(old, new)
+	file, err = io.open(M.file_path, "w")
+	if not file then
+		vim.notify("Failed to open file for writing: " .. err, vim.log.levels.ERROR)
+		return
+	end
+	file:write(new_content)
+	file:close()
+end
+
+-- idea taken from MariaSolOs:
+-- https://github.com/MariaSolOs/dotfiles/blob/main/.config/nvim/lua/commands.lua#L36
+-- Define GxHandler function
+function M.gxhandler()
+	local file = vim.fn.expand("<cfile>")
+	-- Consider anything that looks like string/string a GitHub link.
+	local link = file:match("%w[%w%-]+/[%w%-%._]+")
+	if link then
+		vim.fn.system("open https://www.github.com/" .. link)
+	else
+		vim.notify("Failed to open link: " .. file, vim.log.levels.ERROR)
+	end
+end
+
+function M.gxdotfyle()
+	local file = vim.fn.expand("<cfile>")
+	-- Consider anything that looks like string/string a GitHub link.
+	local link = file:match("%w[%w%-]+/[%w%-%._]+")
+	if link then
+		vim.fn.system("open https://www.dotfyle.com/plugins/" .. link)
+	else
+		vim.notify("Failed to open link: " .. file, vim.log.levels.ERROR)
+	end
+end
+
+function M.diff_with_clipboard()
+	local ftype = vim.api.nvim_get_option_value("filetype", {})
+	local cmd = string.format(
+		[[
+    normal! "xy
+    vsplit
+    enew
+    normal! P
+    setlocal buftype=nowrite
+    set filetype=%s
+    diffthis
+    normal! \<C-w>\<C-w>
+    enew
+    set filetype=%s
+    normal! "xP
+    diffthis
+  ]],
+		ftype,
+		ftype
+	)
+	vim.api.nvim_exec2(cmd, {})
 end
 
 function M.messages_to_quickfix()
@@ -69,6 +145,26 @@ function M.messages_to_quickfix()
 	vim.fn.setqflist(qf_items, "r")
 	vim.cmd.copen()
 	vim.cmd("$")
+end
+
+function M.dofile_safe(path)
+	local old = dofile(path).color_scheme.colors_name
+end
+
+function M.handle_file(action, path, str)
+	local file = io.open(path, action == "read" and "r" or "w")
+	if not file then
+		return action == "read" and nil or false
+	end
+	if action == "read" then
+		local content = file:read("*a")
+		file:close()
+		return content or ""
+	else
+		file:write(str)
+		file:close()
+		return true
+	end
 end
 
 ---Read file contents
@@ -303,44 +399,45 @@ function M.statuscolumn()
 	return table.concat(components, "")
 end
 
--- Neovim Utils
+-- thanks to Venom: https://github.com/RaafatTurki/venom/blob/master/lua/helpers/utils.lua
 --- returns current vim mode name
+-- stylua: ignore start 
 function M.get_mode_name()
 	local mode_names = {
-		n = "no",
-		no = "n?",
-		nov = "n?",
-		noV = "n?",
+		n         = "no",
+		no        = "n?",
+		nov       = "n?",
+		noV       = "n?",
 		["no\22"] = "n?",
-		niI = "ni",
-		niR = "nr",
-		niV = "nv",
-		nt = "nt",
-		v = "vi",
-		vs = "vs",
-		V = "v_",
-		Vs = "vs",
-		["\22"] = "^V",
-		["\22s"] = "^V",
-		s = "se",
-		S = "s_",
-		["\19"] = "^S",
-		i = "in",
-		ic = "ic",
-		ix = "ix",
-		R = "re",
-		Rc = "rc",
-		Rx = "rx",
-		Rv = "rv",
-		Rvc = "rv",
-		Rvx = "rv",
-		c = "co",
-		cv = "ex",
-		r = "..",
-		rm = "m.",
-		["r?"] = "??",
-		["!"] = "!!",
-		t = "te",
+		niI       = "ni",
+		niR       = "nr",
+		niV       = "nv",
+		nt        = "nt",
+		v         = "vi",
+		vs        = "vs",
+		V         = "v_",
+		Vs        = "vs",
+		["\22"]   = "^V",
+		["\22s"]  = "^V",
+		s         = "se",
+		S         = "s_",
+		["\19"]   = "^S",
+		i         = "in",
+		ic        = "ic",
+		ix        = "ix",
+		R         = "re",
+		Rc        = "rc",
+		Rx        = "rx",
+		Rv        = "rv",
+		Rvc       = "rv",
+		Rvx       = "rv",
+		c         = "co",
+		cv        = "ex",
+		r         = "..",
+		rm        = "m.",
+		["r?"]    = "??",
+		["!"]     = "!!",
+		t         = "te",
 	}
 	return mode_names[vim.api.nvim_get_mode().mode]
 end
@@ -348,22 +445,23 @@ end
 --- returns current vim mode highlight
 function M.get_mode_hl()
 	local mode_hls = {
-		n = "NormalMode",
-		i = "InsertMode",
-		v = "VisualMode",
-		V = "VisualMode",
+		n       = "NormalMode",
+		i       = "InsertMode",
+		v       = "VisualMode",
+		V       = "VisualMode",
 		["\22"] = "VisualMode",
-		c = "CommandMode",
-		s = "SelectMode",
-		S = "SelectMode",
+		c       = "CommandMode",
+		s       = "SelectMode",
+		S       = "SelectMode",
 		["\19"] = "SelectMode",
-		R = "ControlMode",
-		r = "ControlMode",
-		["!"] = "NormalMode",
-		t = "TerminalMode",
+		R       = "ControlMode",
+		r       = "ControlMode",
+		["!"]   = "NormalMode",
+		t       = "TerminalMode",
 	}
 
 	return mode_hls[vim.api.nvim_get_mode().mode]
 end
+-- stylua: ignore end
 
 return M

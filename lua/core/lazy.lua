@@ -31,13 +31,13 @@ require("lazy").setup({ { import = "plugins" }, { import = "plugins.lsp" } }, {
 			disabled_plugins = {
 				"gzip",
 				"netrwPlugin",
-				"rplugin",
+				-- "rplugin", -- this is for remote plugins
 				"tarPlugin",
 				"tohtml",
 				"tutor",
 				"zipPlugin",
 				"health",
-				"man",
+				-- "man",
 				-- "matchit",
 				"matchparen",
 			},

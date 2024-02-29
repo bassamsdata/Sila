@@ -2,83 +2,94 @@ local M = {}
 local opt = vim.opt -- for concisenes
 
 M.initial = function()
-  -- stylua: ignore start 
-	vim.g.mapleader      = " " -- set leader key to space
+  -- stylua: ignore start
+	vim.g.mapleader            =  " " -- set leader key to space
 	-- Set <\> as the local leader key - it gives me a whole new set of letters.
-	vim.g.maplocalleader = "\\" -- we need to escabe \ with another \
+	vim.g.maplocalleader       =  "\\" -- we need to escabe \ with another \
 	-- Appearance
-	opt.termguicolors    = true
-	opt.background       = "dark"
-	opt.signcolumn       = "yes"
+	opt.termguicolors          =  true
+	-- opt.background             =  "dark" -- already set in colorrswitch
+	opt.signcolumn             =  "yes"
 	-- line numbers
-	opt.relativenumber   = true
-	opt.number           = true
-	opt.mouse            = "a"-- Enable mouse mode.
+	opt.relativenumber         =  true
+	opt.number                 =  true
+	opt.mouse                  =  "a"-- Enable mouse mode.
 	-- tabs & indentation
-	opt.tabstop          = 2
-	opt.shiftwidth       = 2
-	opt.expandtab        = true
-	-- opt.autoindent    = true
-	opt.shiftround       = true -- Round indent
-	opt.statuscolumn     = [[%!v:lua.require'utils'.statuscolumn()]]
-	opt.undofile         = true-- Save undo history.
-	opt.undolevels       = 10000
+	opt.tabstop                =  2
+	opt.shiftwidth             =  2
+	opt.expandtab              =  true
+	-- opt.autoindent          =  true
+	opt.shiftround             =  true -- Round indent
+	opt.statuscolumn           =  [[%!v:lua.require'utils'.statuscolumn()]]
+	opt.undofile               =  true-- Save undo history.
+	opt.undolevels             =  10000
 	-- Cursor settings
-	opt.cursorline       = true
-	opt.guicursor        = "a:hor25,v:block,i:ver25"
+	opt.cursorline             =  true
+  if not vim.g.neovide then
+	opt.guicursor              =  "a:block-Cursor/lCursor,v:block,i:ver25-TermCursor"
+  end
 	-- view and session options
-	opt.viewoptions      = "cursor,folds"
-	opt.sessionoptions   = "buffers,curdir,folds,help,tabpages,winsize"
+  opt.virtualedit            =  "block"
+	opt.viewoptions            =  "cursor,folds"
+	opt.sessionoptions         =  "buffers,curdir,folds,help,tabpages,winsize"
 	opt.clipboard:append("unnamedplus")
-	opt.list             = true
+	opt.list                   =  true
 	vim.opt.listchars:append({
-		trail              = " ",
-		tab                = "   ",
+		trail                    =  "·",
+		-- tab                   =  "   ",
+    -- leadmultispace           =  "│ ",
+    -- multispace            =  "│ ",
+    tab                      =  "│ ",
+    -- space                 =  '⋅'
 	})
-
-	opt.splitkeep        = "screen"
-	opt.laststatus       = 3
-	opt.pumheight        = 10 -- Maximum number of entries in a popup
-	opt.scrolloff        = 8
-	opt.inccommand       = "split" -- split window for substitute - nice to have
+	-- opt.splitkeep           =  "screen"
+	opt.laststatus             =  3
+	opt.pumheight              =  10 -- Maximum number of entries in a popup
+	opt.scrolloff              =  8
+	opt.sidescrolloff          =  8
+	opt.sidescroll             =  8 -- keep in the center of the screen horizantly
+	opt.inccommand             =  "split" -- split window for substitute - nice to have
 	--spli windows
-	opt.splitright       = true
-	opt.splitbelow       = true
+	opt.splitright             =  true
+	opt.splitbelow             =  true
 	-- search settings
-	opt.ignorecase       = true
-	opt.smartcase        = true
+	opt.ignorecase             =  true
+	opt.smartcase              =  true
 	if vim.env.VSCODE then
-		vim.g.vscode       = true
+		vim.g.vscode             =  true
 	end
 	-- Use ripgrep for grepping.
-	opt.grepprg          = "rg --vimgrep"
-	opt.grepformat       = "%f:%l:%c:%m"
+	opt.grepprg                =  "rg --vimgrep"
+	opt.grepformat             =  "%f:%l:%c:%m"
 	-- Confirm to save changes before exiting modified buffer
-	opt.confirm          = true
+	opt.confirm                =  true
 	--line wrapping
-	opt.wrap             = false
+	opt.wrap                   =  false
 	-- yank to Capital case register with reserving lines
 	opt.cpoptions:append(">")
 	-- completion
 	vim.opt.wildignore:append({ ".DS_Store" })
-	opt.conceallevel     = 2 -- Hide * markup for bold and italic
-	opt.foldcolumn       = "1"
-	opt.foldlevel        = 99
+	opt.conceallevel           =  2 -- Hide * markup for bold and italic
+	opt.foldcolumn             =  "1"
+	-- opt.foldlevel              =  99
 	-- UI characters.
 	opt.fillchars:append({
-		foldopen           = "",
-		foldclose          = "",
-		-- fold            = "⸱",
-		fold               = " ",
-		foldsep            = " ",
-		diff               = "╱",
-		eob                = " ",
+		foldopen                 =  "",
+		foldclose                =  "",
+		-- fold                  =  "⸱",
+		fold                     =  " ",
+		foldsep                  =  " ",
+		diff                     =  "╱",
+		eob                      =  " ",
 	})
 	-- opt.foldtext            =  "v:lua.require'utils'.foldtext()"
 	if vim.fn.has("nvim-0.10") == 1 then
-		opt.smoothscroll         =  true
-		vim.opt.foldmethod       =  "expr"
-		vim.opt.foldexpr         =  "v:lua.require'lazyvim.util'.ui.foldexpr()"
+    opt.smoothscroll         =  true
+    -- vim.opt.foldmethod       =  "expr"
+    -- vim.wo.foldtext          =  'v:lua.vim.treesitter.foldtext()'
+    -- vim.wo.foldexpr          =  'v:lua.vim.treesitter.foldexpr()'
+
+		-- vim.opt.foldexpr         =  "v:lua.require'lazyvim.util'.ui.foldexpr()"
 	else
 		vim.opt.foldmethod       =  "indent"
 	end

@@ -1,4 +1,5 @@
 return {
+	{ "lunarvim/bigfile.nvim", opts = {} },
 	{
 		"mg979/vim-visual-multi",
 		branch = "master",
@@ -8,19 +9,11 @@ return {
 			{ "<C-n>" },
 			{ "<C-Up>" },
 		},
-		opts = {},
-		config = function()
-			if pcall(require, "vim-visual-multi") then
-				require("mini.clue").set_mapping_desc("VMmaps", "\\\\A", "Select All")
-				-- require("mini.clue").set_mapping_desc("V-M", "\\\\A", "Select All")
-				require("mini.clue").set_mapping_desc(
-					"VM_maps",
-					"\\\\",
-					"Add Cursor At Pos"
-				)
-			end
-		end,
+		-- config = function()
+		-- 	require("visual-multi").setup({})
+		-- end,
 	},
+
 	{
 		"epwalsh/pomo.nvim",
 		dev = true,
@@ -42,41 +35,77 @@ return {
 			},
 		},
 	},
-	{ "LudoPinelli/comment-box.nvim", cmd = "CBllline", opts = {} },
-	{ -- TODO: Delete this one - is it really useful?
+
+	{ -- TODO: try to replicate it but simply
 		"kawre/neotab.nvim",
 		event = "InsertEnter",
-		opts = {
-			-- configuration goes here
-		},
+		opts = {},
 	},
-	{
-		"dstein64/vim-startuptime",
-		cmd = "StartupTime",
-		config = function()
-			vim.g.startuptime_tries = 10
-		end,
-	},
+
 	{
 		"Bekaboo/deadcolumn.nvim",
+		-- dev = true,
 		event = { "InsertEnter" },
 		config = function()
 			vim.opt.colorcolumn = "80"
+			local opts = {
+				modes = { "n", "i" },
+				blending = {
+					threshold = 0.75,
+				},
+				warning = {
+					alpha = 0.1,
+				},
+			}
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = "help",
+				callback = function()
+					vim.opt_local.colorcolumn = ""
+				end,
+			})
+			require("deadcolumn").setup(opts)
 		end,
 	},
-	{ "b0o/incline.nvim", event = "BufReadPost", opts = {} },
+
+	{
+		"b0o/incline.nvim",
+		event = "BufReadPost",
+		opts = {},
+	},
+
 	{
 		"folke/zen-mode.nvim",
 		keys = { { "<leader>z", "<cmd>ZenMode<cr>", desc = "ZenMode" } },
 		opts = {
+			window = {
+				width = 0.70,
+				options = {
+					number = false,
+					relativenumber = false,
+					list = false,
+					scrolloff = 99,
+				},
+			},
 			plugins = {
+				twilight = { enabled = false }, -- enable to start Twilight when zen mode opens
 				gitsigns = { enabled = false },
 				wezterm = {
 					enabled = false,
-					-- can be either an absolute font size or the number of incremental steps
 					font = "+4", -- (10% increase per step)
 				},
+				options = {
+					enabled = true,
+					ruler = false, -- disables the ruler text in the cmd line area
+					showcmd = false, -- disables the command in the last line of the screen
+					laststatus = 0,
+				},
 			},
+			on_open = function()
+				vim.cmd("IBLDisable")
+			end,
+			on_close = function()
+				vim.cmd("IBLEnable")
+			end,
 		},
 	},
 }

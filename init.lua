@@ -11,14 +11,15 @@
 -- 	end
 -- end
 
-if vim.loader then
-	vim.loader.enable()
-end
+-- if vim.loader then
+vim.loader.enable()
+-- end
 require("core.options").initial()
 require("core.autcommands")
 require("core.lazy")
 require("core.keymaps")
-pcall(require, "core.mystatusline")
--- if vim.g.vscode ~= nil then
--- 	require("core.vscode")
--- end
+pcall(require, "core.statusline")
+-- require("plugin.intro").setup()
+if vim.g.vscode ~= nil then
+	require("core.vscode")
+end

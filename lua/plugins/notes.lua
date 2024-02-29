@@ -26,6 +26,7 @@ return {
 					},
 				},
 				notes_subdir = "Notes",
+				new_notes_location = "notes_subdir",
 				daily_notes = {
 					folder = "Notes/dailies",
 				},
@@ -71,6 +72,16 @@ return {
 						ObsidianHighlightText = { bg = "#75662e" },
 					},
 				},
+			})
+		end,
+	},
+	{
+		"backdround/global-note.nvim",
+		config = function()
+			local global_note = require("global-note")
+			global_note.setup()
+			vim.keymap.set("n", "<leader>nn", global_note.toggle_note, {
+				desc = "Toggle global note",
 			})
 		end,
 	},

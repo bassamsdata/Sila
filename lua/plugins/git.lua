@@ -2,6 +2,7 @@ return {
 	{
 		"NeogitOrg/neogit",
 		cmd = "Neogit",
+		keys = { { "<leader>gg", "<cmd>Neogit<cr>" } },
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"sindrets/diffview.nvim",
@@ -73,6 +74,9 @@ return {
 	},
 	{
 		"lewis6991/gitsigns.nvim",
+		cond = function()
+			return not vim.b.large_file
+		end,
 		event = { "BufReadPost", "BufNewFile", "BufWritePre" },
 		opts = {
 			signs = {

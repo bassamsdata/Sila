@@ -1,6 +1,5 @@
 return {
 	-- TODO: change the highlight color of the view map 'MiniMapSymbolView'
-	-- and add mini map to the help pages as well :)
 	{
 		"echasnovski/mini.map",
 		cond = function()
@@ -9,6 +8,7 @@ return {
 		event = "FileType lua,norg,quarto",
 		config = function()
 			local map = require("mini.map")
+			require("core.keymaps").minimap()
 			local gen_integr = map.gen_integration
 			if map then
 				map.setup({
@@ -63,7 +63,6 @@ return {
 				local bottom_space = vim.o.cmdheight + (has_statusline and 1 or 0)
 				return vim.o.lines - bottom_space
 			end
-
 			mini_notify.setup({
 				window = {
 					config = function()
@@ -74,10 +73,11 @@ return {
 							title = "Notification ❰❰",
 							title_pos = "right",
 							---TODO: make max width 60%
-							-- width = 50,
+							-- width = math.floor(0.6 * vim.o.columns),
 							border = "solid",
 						}
 					end,
+					max_width_share = 0.6,
 				},
 			})
 		end,
@@ -96,7 +96,7 @@ return {
 		},
 	},
 
-	{ "echasnovski/mini.sessions", event = "VeryLazy", opts = {} },
+	{ "echasnovski/mini.sessions", lazy = true, opts = {} },
 
 	{
 		"echasnovski/mini.align",
@@ -107,45 +107,20 @@ return {
 		opts = {},
 	},
 
-	{ --- TODO: incoprorate the apply_highlight function I made so It can
-		--- apply one highlight for bg and another for fg
-		"echasnovski/mini.hipatterns",
-		cond = function()
-			return not vim.b.large_file
-		end,
-		event = "BufReadPost",
-		config = function()
-			local mini_hipatterns = require("mini.hipatterns")
-
-			if mini_hipatterns then
-				local keywords = { "NOTE", "BUG", "LOVE", "TODO", "TEST", "FIX" }
-				local icons = { "󱑴", "󱑬", "󱑭", "󱑯" }
-				local highlighters = {
-					hex_color = mini_hipatterns.gen_highlighter.hex_color(),
-				}
-
-				for _, keyword in ipairs(keywords) do
-					local lowerKeyword = string.lower(keyword)
-					local highlightGroup = string.format("HiPatterns%s", keyword)
-					highlighters[lowerKeyword] = {
-						pattern = string.format("%s:", keyword),
-						group = highlightGroup,
-						extmark_opts = {
-							sign_text = icons[_],
-							sign_hl_group = highlightGroup,
-						},
-					}
-					highlighters[string.format("%s_trail", lowerKeyword)] = {
-						pattern = string.format("%s: ()%%S+.*()", keyword),
-						group = highlightGroup,
-					}
-				end
-
-				mini_hipatterns.setup({ highlighters = highlighters })
-			end
-		end,
+	{
+		"folke/todo-comments.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = {
+			-- your configuration comes here
+			-- or leave it empty to use the default settings
+			-- refer to the configuration section below
+		},
+		{
+			"echasnovski/mini.animate",
+			event = "VeryLazy",
+			opts = {},
+		},
 	},
-
 	{
 		"echasnovski/mini.bufremove",
 		keys = {

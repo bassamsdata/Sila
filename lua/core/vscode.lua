@@ -1,12 +1,12 @@
 -- Mappings for code commenting
-vim.set.keymap("x", "gc", "<Plug>VSCodeCommentary", {})
-vim.set.keymap("n", "gc", "<Plug>VSCodeCommentary", {})
-vim.set.keymap("o", "gc", "<Plug>VSCodeCommentary", {})
-vim.set.keymap("n", "gcc", "<Plug>VSCodeCommentaryLine", {})
+vim.keymap.set("x", "gc", "<Plug>VSCodeCommentary", {})
+vim.keymap.set("n", "gc", "<Plug>VSCodeCommentary", {})
+vim.keymap.set("o", "gc", "<Plug>VSCodeCommentary", {})
+vim.keymap.set("n", "gcc", "<Plug>VSCodeCommentaryLine", {})
 
 -- Simulate tab switching
-vim.set.keymap("n", "]b", "<Cmd>Tabnext<CR>", {})
-vim.set.keymap("n", "[b", "<Cmd>Tabprev<CR>", {})
+vim.keymap.set("n", "]b", "<Cmd>Tabnext<CR>", {})
+vim.keymap.set("n", "[b", "<Cmd>Tabprev<CR>", {})
 
 -- Workaround for executing visual selection in VS Code (for example, in Python
 -- interactive window)
@@ -60,13 +60,13 @@ Vscode_execute_line_or_selection = function(cur_mode, vscode_command)
 end
 
 -- 'Send to Jupyter'
-vim.set.keymap(
+vim.keymap.set(
 	"x",
 	"<Leader>j",
 	[[:<C-u>lua Vscode_execute_line_or_selection('visual', 'jupyter.execSelectionInteractive')<CR>]],
 	{ noremap = true, silent = true }
 )
-vim.set.keymap(
+vim.keymap.set(
 	"n",
 	"<Leader>j",
 	[[:<C-u>lua Vscode_execute_line_or_selection('normal', 'jupyter.execSelectionInteractive')<CR>]],
@@ -74,13 +74,13 @@ vim.set.keymap(
 )
 
 -- 'Send to R'
-vim.set.keymap(
+vim.keymap.set(
 	"x",
 	"<Leader>r",
 	[[:<C-u>lua Vscode_execute_line_or_selection('visual', 'r.runSelection')<CR>]],
 	{ noremap = true, silent = true }
 )
-vim.set.keymap(
+vim.keymap.set(
 	"n",
 	"<Leader>r",
 	[[:<C-u>call VSCodeCall('r.runSelection')<CR>]],
