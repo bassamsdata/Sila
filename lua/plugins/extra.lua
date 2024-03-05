@@ -4,6 +4,11 @@ return {
 		dependencies = { "echasnovski/mini.pick" },
 		cmd = "Nerdy",
 	},
+	-- substitute that preserve case (and easier using {}),
+	-- making one abbreviations in one command,
+	-- making camelCase or snake_case, just use crc to camelCase, [crc] to snake_case, [cr-] for dash-case
+	-- and so on, dot.case, uppercase, lowercase, MixedCase
+	{ "tpope/vim-abolish", event = "BufReadPost" },
 
 	{
 		"chrisgrieser/nvim-origami",
