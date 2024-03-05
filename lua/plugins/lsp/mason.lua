@@ -17,6 +17,7 @@ function M.config()
 		"taplo",
 		"v_analyzer",
 		"ruff_lsp",
+		"gopls",
 	}
 	require("mason").setup({
 		ui = {

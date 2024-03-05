@@ -4,7 +4,7 @@
 -- local M = {}
 local color_scheme = {
 	bg = "dark",
-	colors_name = "nano",
+	colors_name = "original_cockatoo",
 }
 
 -- set background color if it's different

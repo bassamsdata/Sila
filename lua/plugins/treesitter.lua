@@ -52,6 +52,7 @@ return {
 						"r",
 						"query",
 						"sql",
+						"go",
 					},
 					additional_vim_regex_highlighting = false,
 					incremental_selection = {

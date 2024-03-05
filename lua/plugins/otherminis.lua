@@ -115,8 +115,10 @@ return {
 			-- or leave it empty to use the default settings
 			-- refer to the configuration section below
 		},
+
 		{
 			"echasnovski/mini.animate",
+			cond = not vim.g.vscode,
 			event = "VeryLazy",
 			opts = {},
 		},

@@ -326,7 +326,7 @@ local function get_visual_selection_text()
 	end
 end
 
-vim.keymap.set("x", "<CR>", get_visual_selection_text, { noremap = true })
+vim.keymap.set("x", "<CR>", yank_selected, { noremap = true })
 -- ── Abbreviations ─────────────────────────────────────────────────────
 if vim.fn.has("nvim-0.10") == 1 then
 	vim.keymap.set("!a", "sis", "-- stylua: ignore start")
